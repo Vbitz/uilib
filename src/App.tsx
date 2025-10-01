@@ -174,7 +174,7 @@ const tableColumns: TableColumn<Task>[] = [
       const status = value as Task["status"];
       return (
         <span
-          className="inline-flex rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300"
+          className="inline-flex border border-[var(--control-border)] bg-control px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.24em] text-muted"
         >
           {status}
         </span>
@@ -186,13 +186,13 @@ const tableColumns: TableColumn<Task>[] = [
 ];
 
 const FolderIcon = () => (
-  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5 text-slate-400">
+  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5 text-muted">
     <path d="M4 6.75A1.75 1.75 0 015.75 5h4.19l1.6 1.6c.33.33.78.52 1.25.52h5.41A1.75 1.75 0 0120.5 8.87V17.5a1.75 1.75 0 01-1.75 1.75h-13A1.75 1.75 0 014 17.5z" />
   </svg>
 );
 
 const FileIcon = () => (
-  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5 text-slate-400">
+  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5 text-muted">
     <path d="M7.5 4.75A1.75 1.75 0 019.25 3h5.5L19 7.25v12a1.75 1.75 0 01-1.75 1.75h-9.5A1.75 1.75 0 016 19.25v-12z" />
     <path d="M14.25 3v3.5c0 .69.56 1.25 1.25 1.25H19" fill="currentColor" />
   </svg>
@@ -602,7 +602,7 @@ function Workspace() {
         title: "Developer Experience",
         description: "Affordances designed for IDE-like ergonomics.",
         content: (
-          <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <ul className="space-y-2 text-[0.78rem] text-subtle">
             <li className="flex items-start gap-2">
               <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--accent)]" aria-hidden="true" />
               Inline focus rings mirror command palette shortcuts and reduce context switching.
@@ -623,9 +623,9 @@ function Workspace() {
         title: "Publishing",
         description: "Ship releases with guardrails and observability.",
         content: (
-          <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <div className="space-y-2 text-[0.78rem] text-subtle">
             <p>Bundle releases with environment-specific configuration and release windows.</p>
-            <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-300">
+            <p className="border border-[var(--control-border)] bg-control px-3 py-2 text-[0.6rem] uppercase tracking-[0.24em] text-muted">
               Tip: Use the modal action to review tonight's deployment entries from the command ribbon.
             </p>
           </div>
@@ -636,14 +636,14 @@ function Workspace() {
         title: "Metrics",
         description: "Device health and feature adoption reporting.",
         content: (
-          <dl className="grid grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
-            <div className="rounded-lg border border-slate-200 bg-white/70 p-3 dark:border-slate-800 dark:bg-slate-900/60">
-              <dt className="text-xs uppercase tracking-[0.18em] text-slate-400">Feature adoption</dt>
-              <dd className="text-base font-semibold text-slate-700 dark:text-slate-100">82%</dd>
+          <dl className="grid grid-cols-2 gap-3 text-[0.78rem] text-subtle">
+            <div className="border border-[var(--control-border)] bg-[var(--window-bg)]/80 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+              <dt className="text-[0.6rem] uppercase tracking-[0.24em] text-muted">Feature adoption</dt>
+              <dd className="text-[1rem] font-semibold text-subtle">82%</dd>
             </div>
-            <div className="rounded-lg border border-slate-200 bg-white/70 p-3 dark:border-slate-800 dark:bg-slate-900/60">
-              <dt className="text-xs uppercase tracking-[0.18em] text-slate-400">Latency (p95)</dt>
-              <dd className="text-base font-semibold text-slate-700 dark:text-slate-100">118ms</dd>
+            <div className="border border-[var(--control-border)] bg-[var(--window-bg)]/80 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+              <dt className="text-[0.6rem] uppercase tracking-[0.24em] text-muted">Latency (p95)</dt>
+              <dd className="text-[1rem] font-semibold text-subtle">118ms</dd>
             </div>
           </dl>
         ),
@@ -673,9 +673,9 @@ function Workspace() {
             {selectedNodeDetails && selectedNodeDetails.metadata && (
               <div className="grid grid-cols-2 gap-2">
                 {Object.entries(selectedNodeDetails.metadata).map(([key, value]) => (
-                  <div key={key} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
-                    <div className="text-[10px] uppercase tracking-[0.18em] text-slate-400">{key}</div>
-                    <div className="text-sm font-semibold text-slate-700 dark:text-slate-100">{String(value)}</div>
+                  <div key={key} className="border border-[var(--control-border)] bg-control px-3 py-2">
+                    <div className="text-[0.6rem] uppercase tracking-[0.24em] text-muted">{key}</div>
+                    <div className="text-[0.88rem] font-semibold text-subtle">{String(value)}</div>
                   </div>
                 ))}
               </div>
@@ -692,14 +692,14 @@ function Workspace() {
             <p>
               Tracking <strong>{filteredTasks.length}</strong> tasks filtered by <strong>{selectedStatus ?? "All"}</strong> status.
             </p>
-            <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+            <ul className="space-y-2 text-[0.78rem] text-subtle">
               {filteredTasks.map(task => (
-                <li key={task.name} className="flex items-center justify-between rounded border border-slate-200 bg-white px-3 py-2 text-xs dark:border-slate-800 dark:bg-slate-900/60">
-                  <span className="font-medium text-slate-600 dark:text-slate-200">{task.name}</span>
-                  <span className="text-slate-400">{task.status}</span>
+                <li key={task.name} className="flex items-center justify-between border border-[var(--control-border)] bg-control px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
+                  <span className="font-semibold text-subtle">{task.name}</span>
+                  <span>{task.status}</span>
                 </li>
               ))}
-              {filteredTasks.length === 0 && <li className="text-xs text-slate-400">No tasks match the current filter.</li>}
+              {filteredTasks.length === 0 && <li className="text-[0.6rem] uppercase tracking-[0.24em] text-muted">No tasks match the current filter.</li>}
             </ul>
           </div>
         ),
@@ -711,10 +711,10 @@ function Workspace() {
         content: (
           <div className="space-y-3">
             <p>You're on page {paginationPage} of {totalPages} in the release navigator.</p>
-            <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-              <li className="rounded border border-slate-200 bg-white px-3 py-2 text-xs dark:border-slate-800 dark:bg-slate-900/60">Command palette triggered 8 times today.</li>
-              <li className="rounded border border-slate-200 bg-white px-3 py-2 text-xs dark:border-slate-800 dark:bg-slate-900/60">Three pipelines executed successfully in the last hour.</li>
-              <li className="rounded border border-slate-200 bg-white px-3 py-2 text-xs dark:border-slate-800 dark:bg-slate-900/60">Two upcoming deployments require manual approval.</li>
+            <ul className="space-y-2 text-[0.78rem] text-subtle">
+              <li className="border border-[var(--control-border)] bg-control px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">Command palette triggered 8 times today.</li>
+              <li className="border border-[var(--control-border)] bg-control px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">Three pipelines executed successfully in the last hour.</li>
+              <li className="border border-[var(--control-border)] bg-control px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">Two upcoming deployments require manual approval.</li>
             </ul>
           </div>
         ),
@@ -752,8 +752,8 @@ function Workspace() {
     <div className="flex min-h-screen flex-col">
       <Navbar
         brand={
-          <span className="text-base font-semibold">
-            Nebula<span className="text-slate-400">UI</span>
+          <span className="text-[0.9rem] font-semibold text-subtle">
+            Nebula<span className="text-muted">UI</span>
           </span>
         }
         links={navbarLinks}
@@ -775,7 +775,7 @@ function Workspace() {
               placeholder="Find tasks, people, or commands"
               value={search}
               onChange={event => setSearch(event.target.value)}
-              startSlot={<span className="text-slate-400">⌕</span>}
+              startSlot={<span className="text-muted">⌕</span>}
             />
           </CardSection>
           <CardSection title="Accent" description="Switch the highlight color for the current session." defaultOpen>
@@ -785,12 +785,12 @@ function Workspace() {
                   key={swatch.value}
                   type="button"
                   onClick={() => setAccent(swatch.value)}
-                  className="group relative h-9 w-9 rounded-md border border-slate-200 transition hover:-translate-y-0.5 hover:shadow-sm dark:border-slate-800"
+                  className="group relative h-9 w-9 border border-[var(--control-border)] transition hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(9,18,27,0.35)]"
                   style={{ backgroundColor: swatch.value }}
                   aria-label={`Use ${swatch.name} accent`}
                 >
                   {accent.toLowerCase() === swatch.value.toLowerCase() && (
-                    <span className="absolute inset-1 rounded-sm border-2 border-white shadow ring-2 ring-slate-900/70 dark:border-slate-950 dark:ring-slate-50/80" />
+                    <span className="absolute inset-1 border-2 border-[var(--window-bg)] shadow ring-2 ring-[var(--accent)]" />
                   )}
                 </button>
               ))}
@@ -878,9 +878,9 @@ function Workspace() {
                 setSelectedNode(null);
               }
             }}
-            header={<div className="text-sm font-semibold text-slate-100">Blueprints</div>}
+            header={<div className="text-[0.72rem] uppercase tracking-[0.24em] text-subtle">Blueprints</div>}
             footer={
-              <div className="flex flex-col gap-2 text-xs text-slate-400">
+              <div className="flex flex-col gap-2 text-[0.6rem] uppercase tracking-[0.24em] text-muted">
                 <span>Shortcut: Shift + N</span>
                 <Button
                   size="sm"
@@ -918,7 +918,7 @@ function Workspace() {
                     <button
                       type="button"
                       onClick={dismissAll}
-                      className="text-xs font-medium text-slate-500 underline transition hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+                      className="text-[0.6rem] uppercase tracking-[0.24em] text-muted underline transition hover:text-[var(--accent)]"
                     >
                       Clear toasts
                     </button>
@@ -979,7 +979,7 @@ function Workspace() {
             The candidate build <strong>24.10</strong> has passed automated checks. Confirm alerting and rollback procedures
             before the release window begins at 22:00 UTC.
           </p>
-          <ul className="space-y-2 text-sm text-slate-300">
+          <ul className="space-y-2 text-[0.78rem] text-subtle">
             <li>- Observability dashboards replicated to staging.</li>
             <li>- Pager rotation acknowledged by primary and secondary engineers.</li>
             <li>- Rollback script validated in dry-run mode.</li>

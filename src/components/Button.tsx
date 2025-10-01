@@ -3,21 +3,21 @@ import { cn } from "../utils/cn";
 
 const variantStyles = {
   primary:
-    "bg-[var(--accent)] text-[var(--accent-contrast)] hover:bg-[var(--accent-hover)] focus-visible:ring-[var(--accent)] active:bg-[var(--accent-active)] active:shadow-sm",
+    "border-[var(--control-border-strong)] bg-[var(--accent)] text-[var(--accent-contrast)] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)] hover:bg-[var(--accent-hover)] active:bg-[var(--accent-active)]",
   secondary:
-    "bg-slate-200 text-slate-900 hover:bg-slate-300 active:bg-slate-200 focus-visible:ring-slate-400 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 dark:active:bg-slate-700/90",
+    "border-[var(--control-border)] bg-[var(--control-bg)] text-subtle hover:bg-control-hover active:bg-[var(--control-bg)]",
   error:
-    "bg-rose-600 text-slate-50 hover:bg-rose-500 active:bg-rose-600/90 focus-visible:ring-rose-400",
+    "border-[#8f1f32] bg-[#c62842] text-[#fffaf5] hover:bg-[#b9223b] active:bg-[#9f1d32]",
   warning:
-    "bg-amber-500 text-slate-900 hover:bg-amber-400 active:bg-amber-400/90 focus-visible:ring-amber-300",
+    "border-[#9a6b2d] bg-[#c78f3c] text-[#1b1304] hover:bg-[#bb8432] active:bg-[#a87428]",
 } as const;
 
 type ButtonVariant = keyof typeof variantStyles;
 
 const sizeStyles = {
-  sm: "px-2.5 py-1.5 text-xs",
-  md: "px-3 py-2 text-sm",
-  lg: "px-4 py-2.5 text-base",
+  sm: "px-3 py-1.5 text-[0.72rem]",
+  md: "px-4 py-2 text-[0.8rem]",
+  lg: "px-5 py-2.5 text-[0.88rem]",
 } as const;
 
 type ButtonSize = keyof typeof sizeStyles;
@@ -32,10 +32,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center gap-2 rounded-md border border-transparent font-medium",
-        "transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-        "disabled:cursor-not-allowed disabled:opacity-60",
-        "dark:focus-visible:ring-offset-slate-950",
+        "inline-flex items-center gap-2 border font-semibold uppercase tracking-[0.16em]",
+        "rounded-none shadow-[0_1px_0_rgba(255,255,255,0.12)] transition duration-150 ease-out",
+        "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
+        "disabled:cursor-not-allowed disabled:opacity-40",
         sizeStyles[size],
         variantStyles[variant],
         className

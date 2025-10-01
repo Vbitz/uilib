@@ -77,7 +77,7 @@ export function Modal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 px-4 py-8 backdrop-blur"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#030a12]/80 px-6 py-10 backdrop-blur"
       role="presentation"
       onClick={event => {
         if (!closeOnOverlay) return;
@@ -94,21 +94,20 @@ export function Modal({
         tabIndex={-1}
         ref={dialogRef}
         className={cn(
-          "w-full rounded-lg border border-slate-800 bg-slate-950 text-slate-200 shadow-xl outline-none",
-          "dark:border-slate-700 dark:bg-slate-900",
+          "w-full border border-[var(--control-border)] bg-[var(--window-bg)] text-subtle shadow-[0_32px_80px_rgba(4,9,16,0.72)] outline-none",
           sizeStyles[size],
           className
         )}
       >
-        <header className="flex items-start justify-between gap-4 border-b border-slate-800 px-5 py-4">
+        <header className="flex items-start justify-between gap-4 border-b border-[var(--toolbar-border)] px-6 py-5">
           <div className="flex flex-col gap-1">
             {title && (
-              <h2 id={titleId} className="text-base font-semibold text-slate-100">
+              <h2 id={titleId} className="text-[0.9rem] font-semibold uppercase tracking-[0.24em] text-subtle">
                 {title}
               </h2>
             )}
             {description && (
-              <p id={descriptionId} className="text-sm text-slate-400">
+              <p id={descriptionId} className="text-[0.7rem] uppercase tracking-[0.24em] text-muted">
                 {description}
               </p>
             )}
@@ -117,7 +116,7 @@ export function Modal({
             <button
               type="button"
               onClick={() => onClose?.()}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-700 text-slate-400 transition hover:border-slate-600 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+              className="inline-flex h-7 w-7 items-center justify-center border border-[var(--control-border)] text-muted transition hover:border-[var(--accent)] hover:text-[var(--accent-muted-foreground)] focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2"
             >
               <span className="sr-only">Close dialog</span>
               <svg viewBox="0 0 20 20" aria-hidden="true" className="h-4 w-4">
@@ -129,11 +128,11 @@ export function Modal({
             </button>
           )}
         </header>
-        <div className="max-h-[70vh] overflow-y-auto px-5 py-4 text-sm text-slate-300">
+        <div className="max-h-[70vh] overflow-y-auto px-6 py-4 text-[0.78rem] text-subtle">
           {children}
         </div>
         {footer && (
-          <footer className="flex items-center justify-end gap-2 border-t border-slate-800 bg-slate-950/40 px-5 py-3 text-sm">
+          <footer className="flex items-center justify-end gap-2 border-t border-[var(--toolbar-border)] bg-control px-6 py-3 text-[0.72rem] uppercase tracking-[0.18em] text-muted">
             {footer}
           </footer>
         )}

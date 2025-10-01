@@ -119,7 +119,7 @@ export function Tooltip({
         id={tooltipId}
         data-visible={visible}
         className={cn(
-          "pointer-events-none absolute z-20 inline-flex min-w-[120px] max-w-xs flex-col gap-1 rounded border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-slate-200 opacity-0 shadow-xl transition",
+          "pointer-events-none absolute z-20 inline-flex min-w-[140px] max-w-xs flex-col gap-1 border border-[var(--control-border)] bg-[var(--window-bg)] px-3 py-1.5 text-[0.6rem] uppercase tracking-[0.24em] text-muted opacity-0 shadow-[0_10px_30px_rgba(9,18,27,0.35)] transition",
           "data-[visible=true]:opacity-100",
           placementStyles[placement],
           className
@@ -134,7 +134,7 @@ export function Tooltip({
         {label}
         <span
           className={cn(
-            "pointer-events-none absolute h-2 w-2 rotate-45 border border-slate-700 bg-slate-900",
+            "pointer-events-none absolute h-2 w-2 rotate-45 border border-[var(--control-border)] bg-[var(--window-bg)]",
             arrowPlacement[placement]
           )}
           aria-hidden="true"

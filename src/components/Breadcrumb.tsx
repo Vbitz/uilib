@@ -41,9 +41,9 @@ const BreadcrumbButton = forwardRef<HTMLButtonElement, BreadcrumbButtonProps>(fu
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center gap-2 rounded px-2 py-1 text-xs font-medium tracking-wide text-slate-500 transition",
-        "hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-        "dark:hover:bg-slate-800/60 dark:text-slate-400 dark:hover:text-slate-200 dark:focus-visible:ring-offset-slate-900",
+        "inline-flex items-center gap-2 border border-transparent px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-muted transition",
+        "hover:border-[var(--control-border)] hover:bg-control-hover",
+        "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
         className
       )}
       {...props}
@@ -59,9 +59,9 @@ const BreadcrumbLink = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTMLAn
     <a
       ref={ref}
       className={cn(
-        "inline-flex items-center gap-2 rounded px-2 py-1 text-xs font-medium tracking-wide text-slate-500 transition",
-        "hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-        "dark:hover:bg-slate-800/60 dark:text-slate-400 dark:hover:text-slate-200 dark:focus-visible:ring-offset-slate-900",
+        "inline-flex items-center gap-2 border border-transparent px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-muted transition",
+        "hover:border-[var(--control-border)] hover:bg-control-hover",
+        "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
         className
       )}
       {...props}
@@ -71,24 +71,24 @@ const BreadcrumbLink = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTMLAn
 
 export function Breadcrumb({ items, separator, className }: BreadcrumbProps) {
   const effectiveSeparator = separator ?? (
-    <svg viewBox="0 0 20 20" aria-hidden="true" className="h-3 w-3 text-slate-400">
+    <svg viewBox="0 0 20 20" aria-hidden="true" className="h-3 w-3 text-muted">
       <path d="M7.7 5.45a.75.75 0 011.05-.15l4 3a.75.75 0 010 1.2l-4 3a.75.75 0 01-.9-1.2l3-2.25-3-2.25a.75.75 0 01-.15-1.05z" fill="currentColor" />
     </svg>
   );
 
   return (
     <nav aria-label="Breadcrumb" className={className}>
-      <ol className="flex flex-wrap items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1 text-xs shadow-sm dark:border-slate-800 dark:bg-slate-950">
+      <ol className="flex flex-wrap items-center gap-1 border border-[var(--control-border)] bg-[var(--window-bg)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-muted shadow-[0_4px_16px_rgba(9,18,27,0.2)]">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           const content = (
             <span
               className={cn(
                 "inline-flex items-center gap-2",
-                isLast ? "font-semibold text-slate-700 dark:text-slate-50" : undefined
+                isLast ? "font-semibold text-[var(--accent-muted-foreground)]" : undefined
               )}
             >
-              {item.icon && <span className="text-slate-400">{item.icon}</span>}
+              {item.icon && <span className="text-muted">{item.icon}</span>}
               <span>{item.label}</span>
             </span>
           );
@@ -124,15 +124,15 @@ export function Breadcrumb({ items, separator, className }: BreadcrumbProps) {
               ) : (
                 <span
                   className={cn(
-                    "inline-flex items-center gap-2 px-2 py-1 text-xs",
-                    isLast ? "font-semibold text-slate-700 dark:text-slate-200" : "text-slate-500 dark:text-slate-400"
+                    "inline-flex items-center gap-2 px-2 py-1",
+                    isLast ? "font-semibold text-[var(--accent-muted-foreground)]" : "text-muted"
                   )}
                   aria-current={isLast ? "page" : undefined}
                 >
                   {content}
                 </span>
               )}
-              {!isLast && <span className="text-slate-400">{effectiveSeparator}</span>}
+              {!isLast && <span className="text-muted">{effectiveSeparator}</span>}
             </li>
           );
         })}

@@ -32,42 +32,41 @@ export const Textbox = forwardRef<HTMLInputElement, TextboxProps>(
   ) => {
     const inputId = id ?? props.name;
     return (
-      <div className={cn("flex w-full flex-col gap-1", disabled && "opacity-70", className)}>
+      <div className={cn("flex w-full flex-col gap-1", disabled && "opacity-60", className)}>
         {label && (
           <label
             htmlFor={inputId}
-            className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300"
+            className="text-[0.6rem] uppercase tracking-[0.24em] text-muted"
           >
             {label}
           </label>
         )}
         <div
           className={cn(
-            "group/input flex w-full items-center gap-2 rounded-md border border-slate-200 bg-white px-2 py-2",
-            "focus-within:border-[var(--accent)] focus-within:ring-2 focus-within:ring-[var(--accent)]",
-            "dark:border-slate-700 dark:bg-slate-900",
-            error && "border-rose-500 focus-within:ring-rose-500",
-            disabled && "cursor-not-allowed bg-slate-100 dark:bg-slate-800",
+            "group/input flex w-full items-center gap-2 border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-2",
+            "focus-within:border-[var(--accent)] focus-within:outline-double focus-within:outline-[var(--accent)] focus-within:outline-offset-2",
+            error && "border-[#c94d63] focus-within:outline-[#c94d63]",
+            disabled && "cursor-not-allowed bg-control",
             fieldClassName
           )}
         >
-          {startSlot && <span className="text-slate-500 dark:text-slate-400">{startSlot}</span>}
+          {startSlot && <span className="text-muted">{startSlot}</span>}
           <input
             ref={ref}
             id={inputId}
             disabled={disabled}
             className={cn(
-              "w-full border-0 bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-slate-100",
+              "w-full border-0 bg-transparent text-[0.8rem] uppercase tracking-[0.18em] text-subtle outline-none placeholder:text-muted",
               inputClassName
             )}
             {...props}
           />
-          {endSlot && <span className="text-slate-500 dark:text-slate-400">{endSlot}</span>}
+          {endSlot && <span className="text-muted">{endSlot}</span>}
         </div>
         {description && !error && (
-          <p className="text-xs text-slate-500 dark:text-slate-400">{description}</p>
+          <p className="text-[0.6rem] uppercase tracking-[0.24em] text-muted">{description}</p>
         )}
-        {error && <p className="text-xs text-rose-500">{error}</p>}
+        {error && <p className="text-[0.6rem] uppercase tracking-[0.24em] text-[#d06060]">{error}</p>}
       </div>
     );
   }

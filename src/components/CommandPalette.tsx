@@ -57,25 +57,26 @@ const CommandRow = memo(
     <button
       type="button"
       className={cn(
-        "flex w-full items-start justify-between gap-4 rounded-md px-3 py-2 text-left",
-        "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-        "focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950",
+        "flex w-full items-start justify-between gap-4 border border-transparent px-3 py-2 text-left text-[0.78rem] uppercase tracking-[0.18em]",
+        "transition duration-150 ease-out focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
         active
-          ? "bg-[var(--accent-muted)] text-[var(--accent-muted-foreground)]"
-          : "hover:bg-[var(--accent-muted)] hover:text-[var(--accent-muted-foreground)]"
+          ? "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
+          : "hover:border-[var(--control-border)] hover:bg-control-hover"
       )}
       onClick={onSelect}
     >
       <div className="flex flex-col gap-1">
-        <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
+        <span className="font-semibold text-subtle">
           {highlightMatch(command.label, query)}
         </span>
         {command.description && (
-          <span className="text-xs text-slate-500 dark:text-slate-400">{command.description}</span>
+          <span className="text-[0.6rem] uppercase tracking-[0.24em] text-muted">
+            {command.description}
+          </span>
         )}
       </div>
       {command.shortcut && (
-        <span className="rounded border border-slate-200 px-2 py-1 text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:border-slate-700 dark:text-slate-400">
+        <span className="border border-[var(--control-border)] bg-control px-2 py-1 text-[0.6rem] uppercase tracking-[0.24em] text-muted">
           {command.shortcut}
         </span>
       )}
@@ -184,30 +185,37 @@ export function CommandPalette({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-[#040910]/85 p-6 backdrop-blur"
       role="dialog"
       aria-modal="true"
       onKeyDown={handleKeyDown}
     >
-      <div
-        ref={containerRef}
-        className="flex w-full max-w-xl flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-2xl dark:border-slate-800 dark:bg-slate-950"
-      >
+      <div ref={containerRef} className="retro-window w-full max-w-3xl overflow-hidden">
+        <div className="retro-window__chrome">
+          <span className="flex items-center gap-2">
+            <span className="inline-flex h-2 w-2 items-center justify-center border border-[var(--control-border-strong)] bg-[var(--accent, #3ba776)] text-[0.5rem] leading-none text-[var(--window-header-foreground)]">
+              •
+            </span>
+            <span className="text-[0.72rem] uppercase tracking-[0.24em]">Command Console</span>
+          </span>
+          <span className="text-[0.6rem] uppercase tracking-[0.24em] text-muted">⌘K</span>
+        </div>
+        <div className="flex flex-col gap-3 px-5 pb-5 pt-16">
         <Textbox
           ref={inputRef}
           value={query}
           onChange={event => setQuery(event.target.value)}
           placeholder={searchPlaceholder}
-          startSlot={<span className="text-slate-400">⌘K</span>}
+          startSlot={<span className="text-muted">⌘K</span>}
         />
         <div className="max-h-72 overflow-y-auto">
           {visibleCommands.length === 0 && (
-            <p className="px-3 py-4 text-sm text-slate-500 dark:text-slate-400">No commands found</p>
+            <p className="px-3 py-4 text-[0.72rem] uppercase tracking-[0.18em] text-muted">No commands found</p>
           )}
           {Array.from(sections.entries()).map(([section, commandsInSection]) => (
             <div key={section || "default"} className="flex flex-col gap-1">
               {section && (
-                <p className="px-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                <p className="px-3 text-[0.6rem] font-semibold uppercase tracking-[0.24em] text-muted">
                   {section}
                 </p>
               )}
@@ -229,15 +237,16 @@ export function CommandPalette({
             </div>
           ))}
         </div>
-        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+        <div className="flex items-center justify-between text-[0.6rem] uppercase tracking-[0.24em] text-muted">
           <span>Use ↑ ↓ to navigate, Enter to run</span>
           <button
             type="button"
-            className="rounded border border-slate-200 px-2 py-1 text-[10px] uppercase tracking-[0.2em] text-slate-500 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-900"
+            className="border border-[var(--control-border)] bg-control px-2 py-1 text-[0.6rem] uppercase tracking-[0.24em] text-muted transition hover:border-[var(--accent)] hover:text-[var(--accent-muted-foreground)]"
             onClick={onClose}
           >
             Close
           </button>
+        </div>
         </div>
       </div>
     </div>

@@ -36,28 +36,33 @@ const CardRoot = ({
   className,
   children,
 }: CardProps) => {
+  const chromeLabel = title ?? "Panel";
+
   return (
     <article
       className={cn(
-        "flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm",
-        "dark:border-slate-800 dark:bg-slate-950",
+        "retro-window overflow-hidden text-sm text-subtle",
+        "backdrop-blur-[1px]",
         className
       )}
     >
-      {(title || description || actions) && (
-        <header className="flex items-start justify-between gap-3">
-          <div className="flex flex-col gap-1">
-            {title && <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h3>}
-            {description && (
-              <p className="text-sm text-slate-500 dark:text-slate-400">{description}</p>
-            )}
-          </div>
-          {actions && <div className="flex items-center gap-2">{actions}</div>}
-        </header>
-      )}
-      <div className="text-sm text-slate-700 dark:text-slate-200">{children}</div>
+      <div className="retro-window__chrome">
+        <div className="flex items-center gap-2 truncate">
+          <span className="inline-flex h-2 w-2 items-center justify-center border border-[var(--control-border-strong)] bg-[var(--accent, #3ba776)] text-[0.5rem] leading-none text-[var(--window-header-foreground)]">
+            •
+          </span>
+          <span className="truncate">{chromeLabel}</span>
+        </div>
+        {actions && <div className="flex items-center gap-2">{actions}</div>}
+      </div>
+      <div className="flex flex-col gap-5 px-5 pb-6 pt-16">
+        {description && (
+          <p className="text-xs uppercase tracking-[0.26em] text-muted">{description}</p>
+        )}
+        <div className="flex flex-col gap-4 text-sm text-subtle">{children}</div>
+      </div>
       {footer && (
-        <footer className="border-t border-slate-100 pt-3 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+        <footer className="border-t border-dashed border-[var(--toolbar-border)] bg-[var(--toolbar-bg)] px-5 py-3 text-[0.65rem] uppercase tracking-[0.24em] text-muted">
           {footer}
         </footer>
       )}
@@ -65,7 +70,8 @@ const CardRoot = ({
   );
 };
 
-const chevronClasses = "h-3 w-3 text-slate-500 transition-transform group-data-[state=open]:rotate-90";
+const chevronClasses =
+  "h-3 w-3 text-muted transition-transform duration-200 group-data-[state=open]:rotate-90";
 
 const CardSection = ({
   title,
@@ -96,7 +102,7 @@ const CardSection = ({
   const headerDescription = useMemo(
     () =>
       description ? (
-        <p className="text-xs text-slate-500 dark:text-slate-400">{description}</p>
+        <p className="text-[0.6rem] uppercase tracking-[0.24em] text-muted">{description}</p>
       ) : null,
     [description]
   );
@@ -105,13 +111,13 @@ const CardSection = ({
     <section
       data-state={expanded ? "open" : "closed"}
       className={cn(
-        "group rounded-md border border-slate-200 bg-slate-50/80 text-sm",
-        "transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900/40",
-        disabled && "opacity-60",
+        "group border border-[var(--control-border)] bg-[var(--control-bg)] text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]",
+        "transition duration-200",
+        disabled && "opacity-50",
         className
       )}
     >
-      <header className="flex items-center justify-between gap-2 px-3 py-2">
+      <header className="flex items-center justify-between gap-2 px-4 py-3">
         <button
           type="button"
           aria-expanded={expanded}
@@ -120,9 +126,9 @@ const CardSection = ({
           onClick={handleToggle}
           disabled={disabled}
           className={cn(
-            "inline-flex max-w-full flex-1 items-center gap-2 text-left font-medium text-slate-700",
-            "rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-            "focus-visible:ring-offset-white dark:text-slate-200 dark:focus-visible:ring-offset-slate-950"
+            "inline-flex max-w-full flex-1 items-center gap-3 bg-transparent text-left font-medium",
+            "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-4",
+            "text-[0.85rem] tracking-wide text-subtle"
           )}
         >
           <svg className={chevronClasses} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -130,15 +136,15 @@ const CardSection = ({
           </svg>
           <span className="truncate">{title}</span>
         </button>
-        {actions && <div className="flex shrink-0 items-center gap-2 text-xs text-slate-500">{actions}</div>}
+        {actions && <div className="flex shrink-0 items-center gap-px text-xs uppercase tracking-[0.24em] text-muted">{actions}</div>}
       </header>
-      {headerDescription && <div className="px-3 pb-2">{headerDescription}</div>}
+      {headerDescription && <div className="px-4 pb-3 text-[0.7rem] uppercase tracking-[0.24em] text-muted">{headerDescription}</div>}
       <div
         id={contentId}
         role="region"
         aria-labelledby={labelId}
         hidden={!expanded}
-        className="px-3 pb-3 text-slate-600 dark:text-slate-300"
+        className="px-4 pb-4 text-[0.85rem] text-subtle"
       >
         {children}
       </div>

@@ -76,14 +76,13 @@ export function Listbox({
       role="listbox"
       tabIndex={0}
       className={cn(
-        "flex w-full flex-col overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm",
-        "dark:border-slate-800 dark:bg-slate-950",
+        "flex w-full flex-col overflow-hidden border border-[var(--control-border)] bg-[var(--window-bg)] shadow-[0_8px_20px_rgba(9,18,27,0.28)]",
         className
       )}
       onKeyDown={handleKeyDown}
     >
       {options.length === 0 && (
-        <div className="px-3 py-4 text-sm text-slate-500 dark:text-slate-400">{emptyState}</div>
+        <div className="px-3 py-4 text-[0.72rem] uppercase tracking-[0.18em] text-muted">{emptyState}</div>
       )}
       {options.map(option => {
         const isSelected = option.id === value;
@@ -97,24 +96,23 @@ export function Listbox({
             disabled={option.disabled}
             onClick={() => onChange?.(option.id)}
             className={cn(
-              "flex w-full items-center justify-between px-3 py-2 text-left text-sm",
-              "transition-colors duration-150",
-              "hover:bg-[var(--accent-muted)] hover:text-[var(--accent-muted-foreground)]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-              "focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950",
-              option.disabled && "cursor-not-allowed text-slate-400 hover:bg-transparent dark:text-slate-600",
-              isSelected && "bg-[var(--accent-muted)] text-[var(--accent-muted-foreground)]",
-              !option.disabled && isSelected && "shadow-inner shadow-[0_0_0_1px_var(--accent-muted)]"
+              "flex w-full items-center justify-between border-b border-[var(--control-border)] px-3 py-2 text-left text-[0.74rem] uppercase tracking-[0.18em] last:border-b-0",
+              "transition duration-150 ease-out",
+              "hover:bg-control-hover",
+              "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
+              option.disabled && "cursor-not-allowed opacity-50",
+              isSelected && "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]",
+              !option.disabled && isSelected && "shadow-inner"
             )}
           >
             <span className="flex flex-col">
-              <span className="font-medium">{option.label}</span>
+              <span className="text-[0.74rem] font-semibold text-subtle">{option.label}</span>
               {option.description && (
-                <span className="text-xs text-slate-500 dark:text-slate-400">{option.description}</span>
+                <span className="text-[0.58rem] uppercase tracking-[0.24em] text-muted">{option.description}</span>
               )}
             </span>
             {option.shortcut && (
-              <span className="rounded border border-slate-200 px-2 py-1 text-[10px] uppercase tracking-wide text-slate-500 dark:border-slate-700 dark:text-slate-400">
+              <span className="border border-[var(--control-border)] bg-control px-2 py-1 text-[0.6rem] uppercase tracking-[0.24em] text-muted">
                 {option.shortcut}
               </span>
             )}

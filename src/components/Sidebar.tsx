@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { isValidElement, useState, type ReactNode } from "react";
 import { cn } from "../utils/cn";
 
 type SidebarItem = {
@@ -73,43 +73,43 @@ export function Sidebar({
             }
           }}
           className={cn(
-            "group inline-flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm transition",
-            "hover:bg-[var(--accent-muted)] hover:text-[var(--accent-muted-foreground)]",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-            "focus-visible:ring-offset-slate-950",
+            "group inline-flex w-full items-center gap-2 border border-transparent px-3 py-2 text-left text-[0.74rem] uppercase tracking-[0.18em] transition duration-150 ease-out",
+            "hover:border-[var(--control-border)] hover:bg-control-hover",
+            "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
             item.disabled && "cursor-not-allowed opacity-50",
-            isActive && !isGroup && "bg-[var(--accent-muted)] text-[var(--accent-muted-foreground)] shadow-inner"
+            isActive && !isGroup &&
+              "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
           )}
           aria-current={isActive && !isGroup ? "page" : undefined}
           aria-expanded={isGroup ? isExpanded : undefined}
           aria-haspopup={isGroup ? "true" : undefined}
         >
           {item.icon && (
-            <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded border border-slate-800/50 bg-slate-900/40 text-[0.8rem] text-slate-400">
+            <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center border border-[var(--control-border)] bg-control text-[0.7rem] text-muted">
               {item.icon}
             </span>
           )}
           {!collapsed && (
             <span className="flex flex-1 flex-col gap-0.5">
-              <span className="text-sm font-medium text-slate-200 group-hover:text-[var(--accent-muted-foreground)]">
+              <span className="text-[0.74rem] font-semibold uppercase tracking-[0.18em] text-subtle group-hover:text-[var(--accent-muted-foreground)]">
                 {item.label}
               </span>
               {item.description && (
-                <span className="text-xs text-slate-500 group-hover:text-slate-400">
+                <span className="text-[0.58rem] uppercase tracking-[0.24em] text-muted group-hover:text-subtle">
                   {item.description}
                 </span>
               )}
             </span>
           )}
           {!collapsed && item.badge && (
-            <span className="ml-auto inline-flex items-center rounded bg-slate-800 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300">
+            <span className="ml-auto inline-flex items-center border border-[var(--control-border)] bg-control px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-muted">
               {item.badge}
             </span>
           )}
           {isGroup && !collapsed && (
             <svg
               className={cn(
-                "h-3.5 w-3.5 text-slate-500 transition-transform",
+                "h-3.5 w-3.5 text-muted transition-transform",
                 isExpanded ? "rotate-90" : "rotate-0"
               )}
               viewBox="0 0 20 20"
@@ -120,7 +120,7 @@ export function Sidebar({
           )}
         </button>
         {isGroup && !collapsed && isExpanded && (
-          <div className="mt-1 flex flex-col gap-1 border-l border-slate-800/40 pl-3">
+          <div className="mt-1 flex flex-col gap-1 border-l border-[var(--toolbar-border)] pl-3">
             {item.items!.map(child => renderItem(child, depth + 1))}
           </div>
         )}
@@ -128,24 +128,40 @@ export function Sidebar({
     );
   };
 
+  let headerText: string | undefined;
+  if (typeof header === "string") {
+    headerText = header;
+  } else if (isValidElement(header) && typeof header.props.children === "string") {
+    headerText = header.props.children;
+  }
+
+  const chromeTitle = headerText ?? "Navigator";
+
   return (
     <aside
       className={cn(
-        "flex h-full flex-col gap-3 rounded-xl border border-slate-800 bg-slate-950 p-3 text-slate-200 shadow-inner",
-        collapsed ? "w-[72px]" : "w-64",
+        "retro-window overflow-hidden",
+        collapsed ? "w-[88px]" : "w-72",
         className
       )}
     >
-      <div className="flex items-center justify-between">
-        {header}
+      <div className="retro-window__chrome">
+        <span className="flex items-center gap-2 truncate">
+          <span className="inline-flex h-2 w-2 items-center justify-center border border-[var(--control-border-strong)] bg-[var(--accent, #3ba776)] text-[0.5rem] leading-none text-[var(--window-header-foreground)]">
+            •
+          </span>
+          <span className="truncate text-[0.72rem] uppercase tracking-[0.24em]">
+            {chromeTitle}
+          </span>
+        </span>
         {onToggleCollapse && (
           <button
             type="button"
             onClick={() => onToggleCollapse(!collapsed)}
-            className="inline-flex h-7 w-7 items-center justify-center rounded border border-slate-800 text-slate-400 transition hover:border-slate-700 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            className="inline-flex h-6 w-6 items-center justify-center border border-[var(--control-border)] bg-control text-muted transition hover:border-[var(--accent)] hover:text-[var(--accent-muted-foreground)] focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2"
           >
             <span className="sr-only">Toggle sidebar</span>
-            <svg viewBox="0 0 20 20" aria-hidden="true" className="h-4 w-4">
+            <svg viewBox="0 0 20 20" aria-hidden="true" className="h-3.5 w-3.5">
               <path
                 d="M12.5 5.5a.75.75 0 010 1.5H7.5a.75.75 0 010-1.5h5zM12.5 9.25a.75.75 0 010 1.5H7.5a.75.75 0 010-1.5h5zM13.25 13a.75.75 0 01-.75.75H7.5a.75.75 0 010-1.5h5a.75.75 0 01.75.75z"
                 fill="currentColor"
@@ -154,21 +170,32 @@ export function Sidebar({
           </button>
         )}
       </div>
-      <nav className="flex-1 space-y-4 overflow-y-auto">
-        {sections.map(section => (
-          <div key={section.id} className="flex flex-col gap-2">
-            {!collapsed && section.label && (
-              <div className="px-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                {section.label}
-              </div>
-            )}
-            <div className="flex flex-col gap-1">
-              {section.items.map(item => renderItem(item))}
-            </div>
+      <div className="flex h-full flex-col gap-3 px-4 pb-4 pt-16 text-subtle">
+        {!collapsed && header && (
+          <div className="text-[0.72rem] uppercase tracking-[0.24em] text-muted">
+            {header}
           </div>
-        ))}
-      </nav>
-      {footer && <div className="border-t border-slate-800 pt-3 text-xs text-slate-400">{footer}</div>}
+        )}
+        <nav className="flex-1 space-y-4 overflow-y-auto pr-1">
+          {sections.map(section => (
+            <div key={section.id} className="flex flex-col gap-2">
+              {!collapsed && section.label && (
+                <div className="px-1 text-[0.6rem] uppercase tracking-[0.24em] text-muted">
+                  {section.label}
+                </div>
+              )}
+              <div className="flex flex-col gap-1">
+                {section.items.map(item => renderItem(item))}
+              </div>
+            </div>
+          ))}
+        </nav>
+        {footer && (
+          <div className="border-t border-dashed border-[var(--toolbar-border)] pt-3 text-[0.6rem] uppercase tracking-[0.24em] text-muted">
+            {footer}
+          </div>
+        )}
+      </div>
     </aside>
   );
 }

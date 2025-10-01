@@ -215,13 +215,12 @@ export function TreeView({
       role="tree"
       aria-multiselectable={false}
       className={cn(
-        "flex w-full flex-col overflow-hidden rounded-md border border-slate-200 bg-white text-sm shadow-sm",
-        "dark:border-slate-800 dark:bg-slate-950",
+        "flex w-full flex-col overflow-hidden border border-[var(--control-border)] bg-[var(--window-bg)] text-[0.74rem] shadow-[0_10px_26px_rgba(9,18,27,0.28)]",
         className
       )}
     >
       {visibleItems.length === 0 && (
-        <div className="px-3 py-4 text-slate-500 dark:text-slate-400">{emptyState}</div>
+        <div className="px-3 py-4 text-[0.68rem] uppercase tracking-[0.18em] text-muted">{emptyState}</div>
       )}
       {visibleItems.map(entry => {
         const { item, level, hasChildren, expanded: isExpanded } = entry;
@@ -236,7 +235,7 @@ export function TreeView({
               {hasChildren && (
                 <button
                   type="button"
-                  className="mr-1 inline-flex h-7 w-7 flex-none items-center justify-center rounded-sm text-slate-500 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-slate-900 dark:focus-visible:ring-offset-slate-950"
+                  className="mr-1 inline-flex h-7 w-7 flex-none items-center justify-center border border-[var(--control-border)] bg-control text-muted transition hover:border-[var(--accent)] hover:text-[var(--accent-muted-foreground)] focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2"
                   aria-label={isExpanded ? "Collapse" : "Expand"}
                   aria-controls={`treeitem-${item.id}`}
                   aria-expanded={isExpanded}
@@ -271,25 +270,24 @@ export function TreeView({
                   }
                 }}
                 className={cn(
-                  "group relative flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-left",
-                  "transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-                  "focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950",
-                  !disabled && "hover:bg-[var(--accent-muted)] hover:text-[var(--accent-muted-foreground)]",
-                  isSelected && "bg-[var(--accent-muted)] text-[var(--accent-muted-foreground)]",
-                  disabled && "cursor-not-allowed text-slate-400 opacity-60 dark:text-slate-600"
+                  "group relative flex w-full items-center justify-between border-b border-[var(--control-border)] px-2 py-1.5 text-left uppercase tracking-[0.18em] last:border-b-0",
+                  "transition duration-150 ease-out focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
+                  !disabled && "hover:bg-control-hover",
+                  isSelected && "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]",
+                  disabled && "cursor-not-allowed opacity-50"
                 )}
               >
                 <span className="flex flex-col gap-0.5">
-                  <span className="inline-flex items-center gap-2 font-medium text-slate-700 dark:text-slate-200">
-                    {item.icon && <span className="text-slate-400 dark:text-slate-500">{item.icon}</span>}
+                  <span className="inline-flex items-center gap-2 font-semibold text-subtle">
+                    {item.icon && <span className="text-muted">{item.icon}</span>}
                     {item.label}
                   </span>
                   {item.description && (
-                    <span className="text-xs text-slate-500 dark:text-slate-400">{item.description}</span>
+                    <span className="text-[0.58rem] uppercase tracking-[0.24em] text-muted">{item.description}</span>
                   )}
                 </span>
                 {item.badge && (
-                  <span className="ml-3 inline-flex items-center rounded-full border border-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                  <span className="ml-3 inline-flex items-center border border-[var(--control-border)] bg-control px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.24em] text-muted">
                     {item.badge}
                   </span>
                 )}

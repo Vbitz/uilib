@@ -32,7 +32,7 @@ export function Table<T extends Record<string, unknown>>({
   className,
   onRowClick,
   emptyState = (
-    <div className="px-3 py-4 text-sm text-slate-500 dark:text-slate-400">
+    <div className="px-3 py-4 text-[0.72rem] uppercase tracking-[0.18em] text-muted">
       No records found
     </div>
   ),
@@ -42,13 +42,12 @@ export function Table<T extends Record<string, unknown>>({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm",
-        "dark:border-slate-800 dark:bg-slate-950",
+        "border border-[var(--control-border)] bg-[var(--window-bg)] shadow-[0_6px_18px_rgba(9,18,27,0.24)]",
         className
       )}
     >
-      <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
-        <thead className="bg-slate-100 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+      <table className="min-w-full divide-y divide-[var(--toolbar-border)] divide-opacity-40">
+        <thead className="bg-control text-[0.68rem] uppercase tracking-[0.24em] text-muted">
           <tr>
             {columns.map(column => (
               <th
@@ -66,7 +65,7 @@ export function Table<T extends Record<string, unknown>>({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 text-sm text-slate-700 dark:divide-slate-900 dark:text-slate-200">
+        <tbody className="divide-y divide-[var(--toolbar-border)] text-[0.78rem] text-subtle">
           {data.length === 0 && (
             <tr>
               <td colSpan={columns.length}>{emptyState}</td>
@@ -76,10 +75,8 @@ export function Table<T extends Record<string, unknown>>({
             <tr
               key={rowIndex}
               className={cn(
-                striped && rowIndex % 2 === 1
-                  ? "bg-slate-50/60 dark:bg-slate-900/40"
-                  : "bg-transparent",
-                onRowClick && "cursor-pointer hover:bg-[var(--accent-muted)]"
+                striped && rowIndex % 2 === 1 ? "bg-control" : "bg-transparent",
+                onRowClick && "cursor-pointer hover:bg-control-hover"
               )}
               onClick={() => onRowClick?.(row)}
             >
@@ -93,7 +90,7 @@ export function Table<T extends Record<string, unknown>>({
                   <td
                     key={String(column.key)}
                     className={cn(
-                      "px-3 text-sm",
+                      "px-3",
                       densityMap[density],
                       column.align === "center" && "text-center",
                       column.align === "right" && "text-right"

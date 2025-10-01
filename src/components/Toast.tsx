@@ -57,11 +57,11 @@ type ToastContextValue = {
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 
 const variantStyles: Record<ToastVariant, string> = {
-  default: "border-slate-700 bg-slate-900 text-slate-200",
-  success: "border-emerald-500/50 bg-emerald-500/15 text-emerald-200",
-  warning: "border-amber-500/50 bg-amber-500/15 text-amber-100",
-  danger: "border-rose-500/50 bg-rose-500/15 text-rose-200",
-  info: "border-cyan-500/50 bg-cyan-500/15 text-cyan-100",
+  default: "border-[var(--control-border)] bg-[var(--window-bg)] text-subtle",
+  success: "border-[#4c9460] bg-[#15241b] text-[#b5f6c8]",
+  warning: "border-[#b4803b] bg-[#2a2012] text-[#f5d7a4]",
+  danger: "border-[#c44d5a] bg-[#301319] text-[#f5b7c9]",
+  info: "border-[#5aa0b7] bg-[#142630] text-[#bde6f6]",
 };
 
 const placementStyles: Record<ToastPlacement, string> = {
@@ -208,26 +208,24 @@ function ToastItem({
       aria-labelledby={titleId}
       aria-describedby={toast.description ? descriptionId : undefined}
       className={cn(
-        "pointer-events-auto flex w-full items-start gap-3 rounded-lg border px-4 py-3 shadow-xl ring-1 ring-slate-900/20 backdrop-blur",
+        "pointer-events-auto flex w-full items-start gap-3 border px-4 py-3 shadow-[0_12px_32px_rgba(4,9,16,0.6)] backdrop-blur-sm",
         variantClass
       )}
     >
-      {toast.icon && (
-        <div className="mt-0.5 text-lg text-current">{toast.icon}</div>
-      )}
+      {toast.icon && <div className="mt-0.5 text-lg text-current">{toast.icon}</div>}
       <div className="flex flex-1 flex-col gap-1">
-        <div id={titleId} className="text-sm font-semibold text-current">
+        <div id={titleId} className="text-[0.78rem] font-semibold uppercase tracking-[0.24em] text-current">
           {toast.title}
         </div>
         {toast.description && (
-          <div id={descriptionId} className="text-xs text-current/80">
+          <div id={descriptionId} className="text-[0.62rem] uppercase tracking-[0.24em] text-current opacity-80">
             {toast.description}
           </div>
         )}
         {toast.action && (
           <button
             type="button"
-            className="inline-flex w-fit items-center gap-1 rounded border border-current/40 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-current transition hover:bg-current/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+            className="inline-flex w-fit items-center gap-1 border border-current/40 px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.24em] text-current transition hover:bg-current/10 focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2"
             onClick={() => {
               toast.action?.onSelect();
               onDismiss(toast.id);
@@ -241,7 +239,7 @@ function ToastItem({
         <button
           type="button"
           onClick={() => onDismiss(toast.id)}
-          className="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded border border-current/30 text-current/70 transition hover:text-current"
+          className="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center border border-current/30 text-current/70 transition hover:text-current focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2"
         >
           <span className="sr-only">Dismiss notification</span>
           <svg viewBox="0 0 20 20" aria-hidden="true" className="h-3.5 w-3.5">

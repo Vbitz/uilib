@@ -43,8 +43,8 @@ type RibbonProps = {
 };
 
 const densityStyles: Record<ToolbarDensity, string> = {
-  compact: "h-8 px-2 text-xs",
-  comfortable: "h-9 px-3 text-sm",
+  compact: "h-8 px-3 text-[0.68rem]",
+  comfortable: "h-9 px-4 text-[0.76rem]",
 };
 
 export function Toolbar({ groups, density = "compact", className }: ToolbarProps) {
@@ -52,49 +52,50 @@ export function Toolbar({ groups, density = "compact", className }: ToolbarProps
     <div
       role="toolbar"
       className={cn(
-        "flex w-full items-stretch gap-3 rounded-md border border-slate-200 bg-white px-2 py-1",
-        "dark:border-slate-800 dark:bg-slate-950",
+        "retro-toolbar flex w-full items-stretch gap-4 border px-3 py-2",
         className
       )}
     >
-      {groups.map(group => {
+      {groups.map((group, index) => {
         if (!group.actions.length) return null;
         return (
-          <div key={group.id} className="flex flex-col gap-1">
-            {group.label && (
-              <span className="px-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                {group.label}
-              </span>
-            )}
-            <div className="flex items-center gap-1">
-              {group.actions.map(action => {
-                const disabled = Boolean(action.disabled);
-                return (
-                  <button
-                    key={action.id}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => {
-                      if (disabled) return;
-                      action.onSelect?.();
-                    }}
-                    className={cn(
-                      "inline-flex items-center gap-2 rounded-md border border-transparent font-medium text-slate-600",
-                      "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-                      "focus-visible:ring-offset-white dark:text-slate-200 dark:focus-visible:ring-offset-slate-950",
-                      densityStyles[density],
-                      action.active
-                        ? "bg-[var(--accent-muted)] text-[var(--accent-muted-foreground)]"
-                        : "hover:bg-slate-100 dark:hover:bg-slate-900/60",
-                      disabled && "cursor-not-allowed opacity-60"
-                    )}
-                    title={action.description}
-                  >
-                    {action.icon && <span className="text-slate-400 dark:text-slate-500">{action.icon}</span>}
-                    <span className="truncate">{action.label}</span>
-                  </button>
-                );
-              })}
+          <div key={group.id} className="flex items-stretch gap-3">
+            {index > 0 && <div className="retro-divider" aria-hidden="true" />}
+            <div className="flex flex-col gap-1">
+              {group.label && (
+                <span className="px-1 text-[0.6rem] uppercase tracking-[0.24em] text-muted">
+                  {group.label}
+                </span>
+              )}
+              <div className="flex items-center gap-1">
+                {group.actions.map(action => {
+                  const disabled = Boolean(action.disabled);
+                  return (
+                    <button
+                      key={action.id}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => {
+                        if (disabled) return;
+                        action.onSelect?.();
+                      }}
+                      className={cn(
+                        "inline-flex items-center gap-2 border border-transparent font-semibold uppercase tracking-[0.16em] text-subtle",
+                        "transition duration-150 ease-out focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
+                        densityStyles[density],
+                        action.active
+                          ? "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
+                          : "hover:border-[var(--control-border)] hover:bg-control-hover",
+                        disabled && "cursor-not-allowed opacity-50"
+                      )}
+                      title={action.description}
+                    >
+                      {action.icon && <span className="text-muted">{action.icon}</span>}
+                      <span className="truncate">{action.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         );
@@ -139,46 +140,61 @@ export function Ribbon({
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 rounded-lg border border-slate-200 bg-white p-2",
-        "dark:border-slate-800 dark:bg-slate-950",
+        "retro-window overflow-hidden",
         className
       )}
     >
-      <div className="flex items-center gap-1 border-b border-slate-200 pb-1 text-sm dark:border-slate-800">
-        {tabs.map(tab => {
-          const isActive = tab.id === currentTab?.id;
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              className={cn(
-                "rounded-md px-3 py-1.5 font-medium",
-                "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-                "focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950",
-                isActive
-                  ? "bg-[var(--accent-muted)] text-[var(--accent-muted-foreground)]"
-                  : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900/60"
-              )}
-              onClick={() => handleSelect(tab.id)}
-            >
-              <span className="inline-flex items-center gap-2">
-                {tab.icon && <span className="text-slate-400 dark:text-slate-500">{tab.icon}</span>}
-                {tab.label}
-              </span>
-            </button>
-          );
-        })}
+      <div className="retro-window__chrome">
+        <span className="flex items-center gap-2">
+          <span className="inline-flex h-2 w-2 items-center justify-center border border-[var(--control-border-strong)] bg-[var(--accent, #3ba776)] text-[0.5rem] leading-none text-[var(--window-header-foreground)]">
+            •
+          </span>
+          <span className="text-[0.72rem] uppercase tracking-[0.18em]">Ribbon Console</span>
+        </span>
+        {currentTab && (
+          <span className="text-[0.6rem] uppercase tracking-[0.24em] text-muted">
+            {currentTab.label}
+          </span>
+        )}
       </div>
-      {currentTab?.description && (
-        <p className="px-1 text-xs text-slate-500 dark:text-slate-400">{currentTab.description}</p>
-      )}
-      {currentTab ? (
-        <Toolbar groups={currentTab.groups} density={density} />
-      ) : (
-        <div className="rounded-md border border-dashed border-slate-200 p-4 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
-          No tab selected
+      <div className="flex flex-col gap-3 px-5 pb-5 pt-16">
+        <div className="flex items-center gap-2 border-b border-dashed border-[var(--toolbar-border)] pb-2 text-[0.72rem] uppercase tracking-[0.18em] text-subtle">
+          {tabs.map(tab => {
+            const isActive = tab.id === currentTab?.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                className={cn(
+                  "px-3 py-1.5 uppercase tracking-[0.18em] transition duration-150 ease-out",
+                  "border border-transparent focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
+                  isActive
+                    ? "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
+                    : "hover:border-[var(--control-border)] hover:bg-control-hover"
+                )}
+                onClick={() => handleSelect(tab.id)}
+              >
+                <span className="inline-flex items-center gap-2">
+                  {tab.icon && <span className="text-muted">{tab.icon}</span>}
+                  {tab.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
-      )}
+        {currentTab?.description && (
+          <p className="text-[0.68rem] uppercase tracking-[0.24em] text-muted">
+            {currentTab.description}
+          </p>
+        )}
+        {currentTab ? (
+          <Toolbar groups={currentTab.groups} density={density} />
+        ) : (
+          <div className="border border-dashed border-[var(--toolbar-border)] p-4 text-center text-[0.72rem] uppercase tracking-[0.18em] text-muted">
+            No tab selected
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -3,15 +3,150 @@
 @layer base {
   :root {
     color-scheme: light dark;
+    --font-mono: "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+    --desktop-bg: #f4f1e8;
+    --desktop-foreground: #1f2533;
+    --desktop-grid: rgba(41, 53, 78, 0.08);
+    --window-bg: #fffdf4;
+    --window-border: #3c3a32;
+    --window-shadow: 0 28px 80px -40px rgba(26, 24, 20, 0.7);
+    --window-header-bg: linear-gradient(90deg, #cec4ad 0%, #ded5c2 35%, #e7decb 100%);
+    --window-header-foreground: #21201c;
+    --window-header-border: #6b5f43;
+    --toolbar-bg: #e7e2d8;
+    --toolbar-border: #b7ae9d;
+    --control-bg: #f7f4ea;
+    --control-bg-hover: #ebe7dc;
+    --control-border: #c3baa9;
+    --control-border-strong: #3c3a32;
+    --subtle-foreground: #5f5848;
+    --muted-foreground: #726a59;
+  }
+
+  :root[data-theme="dark"], [data-theme="dark"] {
+    --desktop-bg: #09121b;
+    --desktop-foreground: #d0e9f5;
+    --desktop-grid: rgba(125, 255, 166, 0.08);
+    --window-bg: #101c2b;
+    --window-border: #2f4c59;
+    --window-shadow: 0 32px 90px -48px rgba(1, 10, 18, 0.9);
+    --window-header-bg: linear-gradient(90deg, #0f2a3d 0%, #163e4f 40%, #1f4f5f 100%);
+    --window-header-foreground: #9bf6c5;
+    --window-header-border: #356979;
+    --toolbar-bg: #132536;
+    --toolbar-border: #2a4457;
+    --control-bg: #122439;
+    --control-bg-hover: #1c344b;
+    --control-border: #2d4a5c;
+    --control-border-strong: #6ad58a;
+    --subtle-foreground: #7fa2c2;
+    --muted-foreground: #9bb8cf;
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 antialiased transition-colors duration-300;
-    @apply dark:bg-slate-950 dark:text-slate-100;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-mono);
+    background-color: var(--desktop-bg);
+    color: var(--desktop-foreground);
+    min-height: 100vh;
+    letter-spacing: 0.01em;
+    font-feature-settings: "zero" 1, "ss01" 1;
+    background-image: radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.08) 0, transparent 40%),
+      radial-gradient(circle at 75% 15%, rgba(0, 0, 0, 0.04) 0, transparent 45%),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 12px 12px, 12px 12px;
+    transition: background-color 220ms ease, color 220ms ease;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mix-blend-mode: soft-light;
+    opacity: 0.6;
   }
 
   *, *::before, *::after {
-    @apply border-slate-200 dark:border-slate-700;
+    border-color: var(--control-border);
+  }
+
+  ::selection {
+    background: var(--accent, rgba(122, 213, 138, 0.45));
+    color: var(--window-header-foreground);
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+    letter-spacing: inherit;
+  }
+}
+
+@layer components {
+  .retro-window {
+    position: relative;
+    border: 1px solid var(--window-border);
+    background: var(--window-bg);
+    box-shadow: var(--window-shadow);
+  }
+
+  .retro-window::before {
+    content: "";
+    display: block;
+    height: 2.75rem;
+    background: var(--window-header-bg);
+    border-bottom: 1px solid var(--window-header-border);
+  }
+
+  .retro-window__chrome {
+    position: absolute;
+    top: 0;
+    inset-inline: 0;
+    height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.25rem;
+    color: var(--window-header-foreground);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+
+  .retro-toolbar {
+    background: var(--toolbar-bg);
+    border: 1px solid var(--toolbar-border);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .retro-divider {
+    background: linear-gradient(180deg, transparent 0%, var(--toolbar-border) 50%, transparent 100%);
+    width: 1px;
+  }
+}
+
+@layer utilities {
+  .text-subtle {
+    color: var(--subtle-foreground);
+  }
+
+  .text-muted {
+    color: var(--muted-foreground);
+  }
+
+  .bg-control {
+    background-color: var(--control-bg);
+  }
+
+  .bg-control-hover {
+    background-color: var(--control-bg-hover);
   }
 }

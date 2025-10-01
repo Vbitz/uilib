@@ -94,8 +94,8 @@ function MenuPanel({ items, onClose, style, level = 0 }: MenuPanelProps) {
       tabIndex={-1}
       style={style}
       className={cn(
-        "z-50 min-w-[200px] rounded-md border border-slate-200 bg-white p-1 text-sm shadow-lg",
-        "dark:border-slate-800 dark:bg-slate-950"
+        "z-50 min-w-[220px] border border-[var(--control-border)] bg-[var(--window-bg)] p-1 text-[0.72rem] uppercase tracking-[0.16em] shadow-[0_22px_48px_rgba(9,18,27,0.64)]",
+        "backdrop-blur-[1px]"
       )}
       onMouseLeave={() => setSubmenuId(null)}
     >
@@ -105,7 +105,7 @@ function MenuPanel({ items, onClose, style, level = 0 }: MenuPanelProps) {
             <div
               key={entry.id}
               role="separator"
-              className="my-1 border-t border-slate-200 dark:border-slate-800"
+              className="my-1 border-t border-dashed border-[var(--toolbar-border)]"
             />
           );
         }
@@ -119,12 +119,11 @@ function MenuPanel({ items, onClose, style, level = 0 }: MenuPanelProps) {
                 type="button"
                 data-menu-item="focusable"
                 className={cn(
-                  "flex w-full items-center justify-between gap-3 rounded px-2 py-1.5 text-left",
-                  "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-                  "focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950",
+                  "flex w-full items-center justify-between gap-3 px-3 py-2 text-left",
+                  "transition duration-150 ease-out focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
                   !disabled &&
-                    "hover:bg-[var(--accent-muted)] hover:text-[var(--accent-muted-foreground)]",
-                  disabled && "cursor-not-allowed text-slate-400 dark:text-slate-600"
+                    "hover:bg-control-hover hover:text-[var(--accent-muted-foreground)]",
+                  disabled && "cursor-not-allowed text-muted opacity-60"
                 )}
                 disabled={disabled}
                 aria-haspopup="menu"
@@ -139,20 +138,22 @@ function MenuPanel({ items, onClose, style, level = 0 }: MenuPanelProps) {
               >
                 <span className="flex flex-col">
                   <span className="inline-flex items-center gap-2">
-                    {entry.icon && <span className="text-slate-400">{entry.icon}</span>}
+                    {entry.icon && <span className="text-muted">{entry.icon}</span>}
                     {entry.label}
                   </span>
                   {entry.description && (
-                    <span className="text-xs text-slate-500 dark:text-slate-400">{entry.description}</span>
+                    <span className="text-[0.6rem] normal-case tracking-normal text-muted">
+                      {entry.description}
+                    </span>
                   )}
                 </span>
                 <span className="inline-flex items-center gap-2">
                   {entry.shortcut && (
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-slate-400">
+                    <span className="text-[0.6rem] tracking-[0.26em] text-muted">
                       {entry.shortcut}
                     </span>
                   )}
-                  <span className="text-slate-400">›</span>
+                  <span className="font-semibold text-muted">›</span>
                 </span>
               </button>
               {isOpen && (
@@ -188,24 +189,20 @@ function MenuPanel({ items, onClose, style, level = 0 }: MenuPanelProps) {
               onClose();
             }}
             className={cn(
-              "flex w-full items-center justify-between gap-3 rounded px-2 py-1.5 text-left",
-              "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-              "focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950",
+              "flex w-full items-center justify-between gap-3 px-3 py-2 text-left",
+              "transition duration-150 ease-out focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
               entry.destructive
-                ? "text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30"
-                : !disabled &&
-                  "hover:bg-[var(--accent-muted)] hover:text-[var(--accent-muted-foreground)]",
-              disabled && "cursor-not-allowed text-slate-400 dark:text-slate-600"
+                ? "text-[#d06060] hover:bg-[#2f1a1c]"
+                : !disabled && "hover:bg-control-hover hover:text-[var(--accent-muted-foreground)]",
+              disabled && "cursor-not-allowed text-muted opacity-60"
             )}
           >
             <span className="inline-flex items-center gap-2">
-              {entry.icon && <span className="text-slate-400">{entry.icon}</span>}
+              {entry.icon && <span className="text-muted">{entry.icon}</span>}
               {entry.label}
             </span>
             {entry.shortcut && (
-              <span className="text-[10px] uppercase tracking-[0.2em] text-slate-400">
-                {entry.shortcut}
-              </span>
+              <span className="text-[0.6rem] tracking-[0.26em] text-muted">{entry.shortcut}</span>
             )}
           </button>
         );
@@ -220,10 +217,10 @@ export function Menubar({ items, className }: MenubarProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const triggerClass = cn(
-    "rounded-md px-2 py-1.5 text-sm font-medium text-slate-700",
-    "transition-colors hover:bg-slate-100 hover:text-slate-900",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-    "focus-visible:ring-offset-white dark:text-slate-200 dark:hover:bg-slate-900/70 dark:hover:text-slate-100 dark:focus-visible:ring-offset-slate-950"
+    "px-3 py-2 text-[0.72rem] uppercase tracking-[0.18em] text-subtle",
+    "border border-transparent transition duration-150 ease-out",
+    "hover:border-[var(--control-border)] hover:bg-control-hover",
+    "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2"
   );
 
   useEffect(() => {
@@ -243,13 +240,12 @@ export function Menubar({ items, className }: MenubarProps) {
       ref={containerRef}
       role="menubar"
       className={cn(
-        "flex w-full items-center gap-2 border-b border-slate-200 bg-white px-2 py-1",
-        "dark:border-slate-800 dark:bg-slate-950",
+        "retro-toolbar flex w-full items-center gap-3 border-b px-3 py-1.5",
         className
       )}
       onMouseLeave={() => setOpenId(null)}
     >
-      <ul className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300">
+      <ul className="flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.18em] text-subtle">
         {visibleItems.map((item, index) => (
           <li key={item.id} className="relative">
             <button
@@ -257,7 +253,11 @@ export function Menubar({ items, className }: MenubarProps) {
                 triggersRef.current[index] = node;
               }}
               type="button"
-              className={cn(triggerClass, openId === item.id && "bg-slate-200/70 dark:bg-slate-900/60")}
+              className={cn(
+                triggerClass,
+                openId === item.id &&
+                  "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
+              )}
               aria-haspopup="menu"
               aria-expanded={openId === item.id}
               onMouseEnter={() => {

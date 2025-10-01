@@ -87,8 +87,7 @@ export function Accordion({
           <section
             key={item.id}
             className={cn(
-              "overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition",
-              "dark:border-slate-800 dark:bg-slate-950",
+              "overflow-hidden border border-[var(--control-border)] bg-[var(--window-bg)] shadow-[0_4px_16px_rgba(9,18,27,0.2)] transition",
               item.disabled && "opacity-60",
               itemClassName
             )}
@@ -98,11 +97,10 @@ export function Accordion({
               id={triggerId}
               type="button"
               className={cn(
-                "flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium",
-                "transition-colors duration-150",
-                "hover:bg-[var(--accent-muted)] hover:text-[var(--accent-muted-foreground)]",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-                "focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950",
+                "flex w-full items-center gap-3 px-4 py-3 text-left text-[0.78rem] uppercase tracking-[0.18em]",
+                "transition duration-150 ease-out",
+                "hover:bg-control-hover",
+                "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
                 item.disabled && "cursor-not-allowed hover:bg-transparent",
                 !item.disabled && "cursor-pointer"
               )}
@@ -114,22 +112,24 @@ export function Accordion({
                 toggle(item.id);
               }}
             >
-              <span className="flex flex-shrink-0 items-center justify-center rounded border border-transparent bg-[var(--accent-muted)] px-1.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--accent-muted-foreground)]">
+              <span className="flex flex-shrink-0 items-center justify-center border border-[var(--control-border)] bg-control px-1.5 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-muted">
                 {isOpen ? "OPEN" : "CLOSED"}
               </span>
               <span className="flex flex-1 flex-col gap-0.5">
-                <span className="flex items-center gap-2 text-sm font-semibold">
-                  {item.icon && <span className="text-base text-slate-400">{item.icon}</span>}
+                <span className="flex items-center gap-2 text-[0.78rem] font-semibold text-subtle">
+                  {item.icon && <span className="text-base text-muted">{item.icon}</span>}
                   {item.title}
                 </span>
                 {item.description && (
-                  <span className="text-xs text-slate-500 dark:text-slate-400">{item.description}</span>
+                  <span className="text-[0.6rem] uppercase tracking-[0.24em] text-muted">
+                    {item.description}
+                  </span>
                 )}
               </span>
               <svg
                 viewBox="0 0 20 20"
                 className={cn(
-                  "h-4 w-4 text-slate-400 transition-transform duration-200",
+                  "h-4 w-4 text-muted transition-transform duration-200",
                   isOpen ? "rotate-180" : "rotate-0"
                 )}
                 aria-hidden="true"
@@ -145,7 +145,7 @@ export function Accordion({
               role="region"
               aria-labelledby={triggerId}
               hidden={!isOpen}
-              className="border-t border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300"
+              className="border-t border-[var(--toolbar-border)] bg-control px-4 py-3 text-[0.78rem] text-subtle"
             >
               {item.content}
             </div>

@@ -75,7 +75,7 @@ export function Tabs({
         role="tablist"
         aria-orientation={isVertical ? "vertical" : "horizontal"}
         className={cn(
-          "flex rounded-md border border-slate-200 bg-white p-1 shadow-sm dark:border-slate-800 dark:bg-slate-950",
+          "retro-toolbar flex gap-1 border px-2 py-1",
           isVertical ? "flex-col" : "flex-row",
           fitted ? "w-full" : undefined
         )}
@@ -96,38 +96,39 @@ export function Tabs({
                 setActive(item.id);
               }}
               className={cn(
-                "group relative flex min-w-[120px] flex-1 items-center gap-2 rounded px-3 py-2 text-left text-sm transition",
-                "hover:bg-[var(--accent-muted)] hover:text-[var(--accent-muted-foreground)]",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-                "focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950",
+                "group relative flex min-w-[120px] flex-1 items-center gap-2 border border-transparent px-3 py-2 text-left text-[0.74rem] uppercase tracking-[0.18em] transition duration-150 ease-out",
+                "hover:border-[var(--control-border)] hover:bg-control-hover",
+                "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
                 item.disabled && "cursor-not-allowed opacity-50",
                 isActive
-                  ? "bg-[var(--accent-muted)] text-[var(--accent-muted-foreground)] shadow-inner"
-                  : "text-slate-500 dark:text-slate-400"
+                  ? "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
+                  : "text-muted"
               )}
             >
               {item.icon && (
-                <span className="text-base text-slate-400 group-hover:text-[var(--accent-muted-foreground)]">
+                <span className="text-base text-muted group-hover:text-[var(--accent-muted-foreground)]">
                   {item.icon}
                 </span>
               )}
               <span className="flex flex-1 flex-col gap-1">
-                <span className="text-sm font-medium text-current">{item.label}</span>
+                <span className="text-[0.74rem] font-semibold uppercase tracking-[0.18em] text-current">
+                  {item.label}
+                </span>
                 {item.description && (
-                  <span className="text-xs text-slate-500 group-hover:text-slate-400">
+                  <span className="text-[0.58rem] uppercase tracking-[0.24em] text-muted group-hover:text-subtle">
                     {item.description}
                   </span>
                 )}
               </span>
               {item.badge && (
-                <span className="inline-flex items-center rounded bg-slate-800 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">
+                <span className="inline-flex items-center border border-[var(--control-border)] bg-control px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-muted">
                   {item.badge}
                 </span>
               )}
               <span
                 className={cn(
-                  "absolute inset-x-1 bottom-0 h-0.5 rounded-full transition",
-                  isActive ? "bg-[var(--accent)]" : "bg-transparent"
+                  "absolute inset-x-1 bottom-0 h-0.5 bg-[var(--accent)] transition",
+                  !isActive && "opacity-0"
                 )}
                 aria-hidden="true"
               />
@@ -140,8 +141,7 @@ export function Tabs({
         id={`tab-panel-${activeTab?.id ?? "panel"}`}
         aria-labelledby={activeTab ? `tab-${activeTab.id}` : undefined}
         className={cn(
-          "flex-1 rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600 shadow-sm",
-          "dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300",
+          "flex-1 border border-[var(--control-border)] bg-[var(--window-bg)] p-5 text-[0.78rem] text-subtle shadow-[0_6px_18px_rgba(9,18,27,0.24)]",
           contentClassName
         )}
       >

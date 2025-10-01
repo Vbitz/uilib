@@ -93,8 +93,7 @@ export function Pagination({
   return (
     <nav
       className={cn(
-        "inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs shadow-sm",
-        "dark:border-slate-800 dark:bg-slate-950",
+        "inline-flex items-center gap-1 border border-[var(--control-border)] bg-[var(--window-bg)] px-2.5 py-1 text-[0.68rem] uppercase tracking-[0.18em] shadow-[0_4px_16px_rgba(9,18,27,0.2)]",
         className
       )}
       aria-label="Pagination"
@@ -104,10 +103,10 @@ export function Pagination({
         onClick={() => handlePageChange(safePage - 1)}
         disabled={prevDisabled}
         className={cn(
-          "inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-slate-500 transition",
-          "hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-          "focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50",
-          "dark:hover:bg-slate-800/60 dark:text-slate-400 dark:hover:text-slate-200 dark:focus-visible:ring-offset-slate-900"
+          "inline-flex items-center gap-1 border border-transparent px-2 py-1 transition",
+          "hover:border-[var(--control-border)] hover:bg-control-hover",
+          "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
+          "disabled:cursor-not-allowed disabled:opacity-50"
         )}
       >
         <svg viewBox="0 0 20 20" aria-hidden="true" className="h-3 w-3 text-current">
@@ -126,14 +125,12 @@ export function Pagination({
                   onClick={() => handlePageChange(item)}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "inline-flex min-w-[32px] items-center justify-center rounded-md px-2 py-1 text-xs font-semibold transition",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-                    "focus-visible:ring-offset-white disabled:cursor-not-allowed",
+                    "inline-flex min-w-[32px] items-center justify-center border border-transparent px-2 py-1 text-[0.68rem] font-semibold transition",
+                    "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
+                    "disabled:cursor-not-allowed",
                     isActive
-                      ? "bg-[var(--accent-muted)] text-[var(--accent-muted-foreground)] shadow-inner"
-                      : "text-slate-500 hover:bg-slate-100 hover:text-slate-700",
-                    "dark:focus-visible:ring-offset-slate-900",
-                    !isActive && "dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-200"
+                      ? "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
+                      : "text-muted hover:border-[var(--control-border)] hover:bg-control-hover"
                   )}
                   disabled={disabled}
                 >
@@ -145,7 +142,7 @@ export function Pagination({
 
           const ariaLabel = item === "ellipsis-left" ? "Collapsed previous pages" : "Collapsed next pages";
           return (
-            <li key={`${item}-${index}`} className="px-1 text-slate-400" aria-label={ariaLabel}>
+            <li key={`${item}-${index}`} className="px-1 text-muted" aria-label={ariaLabel}>
               <svg viewBox="0 0 20 20" aria-hidden="true" className="h-3 w-3">
                 <circle cx="6" cy="10" r="1.1" fill="currentColor" />
                 <circle cx="10" cy="10" r="1.1" fill="currentColor" />
@@ -160,10 +157,10 @@ export function Pagination({
         onClick={() => handlePageChange(safePage + 1)}
         disabled={nextDisabled}
         className={cn(
-          "inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-slate-500 transition",
-          "hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2",
-          "focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50",
-          "dark:hover:bg-slate-800/60 dark:text-slate-400 dark:hover:text-slate-200 dark:focus-visible:ring-offset-slate-900"
+          "inline-flex items-center gap-1 border border-transparent px-2 py-1 transition",
+          "hover:border-[var(--control-border)] hover:bg-control-hover",
+          "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
+          "disabled:cursor-not-allowed disabled:opacity-50"
         )}
       >
         <span>{nextLabel}</span>

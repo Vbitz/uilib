@@ -31,31 +31,32 @@ export function Navbar({
     <nav
       role="navigation"
       className={cn(
-        "flex w-full items-center justify-between gap-4 border-b border-slate-200 bg-white",
-        "px-4",
-        dense ? "h-12" : "h-14",
-        "dark:border-slate-800 dark:bg-slate-950",
+        "retro-toolbar flex w-full items-center justify-between gap-4 border-b px-5",
+        dense ? "h-11" : "h-14",
         className
       )}
     >
-      <div className="flex min-w-0 items-center gap-4">
-        {brand && <div className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{brand}</div>}
+      <div className="flex min-w-0 items-center gap-5">
+        {brand && (
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.28em] text-muted">
+            {brand}
+          </div>
+        )}
         {links.length > 0 && (
-          <ul className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300">
+          <ul className="flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.18em] text-subtle">
             {links.map(link => {
               const isActive = Boolean(link.active);
               const content = (
                 <span className="inline-flex items-center gap-2">
-                  {link.icon && <span className="text-slate-400 dark:text-slate-500">{link.icon}</span>}
+                  {link.icon && <span className="text-muted">{link.icon}</span>}
                   <span className="truncate">{link.label}</span>
                 </span>
               );
 
               const baseClasses = cn(
-                "flex items-center gap-2 rounded-md px-2.5 py-2 transition-colors",
-                "hover:bg-slate-100 hover:text-slate-900",
-                "dark:hover:bg-slate-900/70 dark:hover:text-slate-100",
-                isActive && "bg-[var(--accent-muted)] text-[var(--accent-muted-foreground)]"
+                "flex items-center gap-2 border border-transparent px-3 py-2 transition",
+                "hover:border-[var(--control-border)] hover:bg-control-hover",
+                isActive && "border-[var(--accent)] bg-[var(--accent-muted)] text-[var(--accent-muted-foreground)]"
               );
 
               if (link.href) {
@@ -79,7 +80,7 @@ export function Navbar({
           </ul>
         )}
       </div>
-      <div className="ml-auto flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+      <div className="ml-auto flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.18em] text-muted">
         {children}
         {actions}
       </div>
