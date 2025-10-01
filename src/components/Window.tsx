@@ -3,6 +3,13 @@ import { cn } from "../utils/cn";
 
 type WindowState = "normal" | "maximized" | "minimized";
 
+type WindowConnection = {
+  sourceWindowId: string;
+  targetWindowId: string;
+  sourcePort: string;
+  targetPort: string;
+};
+
 type WindowProps = {
   id: string;
   title: string;
@@ -16,6 +23,11 @@ type WindowProps = {
   className?: string;
   state?: WindowState;
   onStateChange?: (state: WindowState) => void;
+  showPorts?: boolean;
+  inputs?: string[];
+  outputs?: string[];
+  onConnectionStart?: (windowId: string, port: string, isOutput: boolean) => void;
+  onConnectionEnd?: (windowId: string, port: string) => void;
 };
 
 export function Window({
@@ -31,6 +43,11 @@ export function Window({
   className,
   state: externalState,
   onStateChange,
+  showPorts = false,
+  inputs = [],
+  outputs = [],
+  onConnectionStart,
+  onConnectionEnd,
 }: WindowProps) {
   // Detect if we're on mobile
   const [isMobile, setIsMobile] = useState(false);
@@ -274,6 +291,47 @@ export function Window({
         {children}
       </div>
 
+      {/* Connection Ports */}
+      {showPorts && windowState !== "maximized" && (
+        <>
+          {/* Input ports on the left */}
+          {inputs.map((input, index) => (
+            <div
+              key={`input-${input}`}
+              className="absolute left-0 flex items-center"
+              style={{
+                top: `${50 + (index * 30)}px`,
+                transform: "translateX(-50%)",
+              }}
+            >
+              <div
+                className="h-3 w-3 cursor-pointer rounded-full border-2 border-[var(--accent)] bg-[var(--window-bg)] transition hover:bg-[var(--accent)]"
+                onClick={() => onConnectionEnd?.(id, input)}
+                title={`Input: ${input}`}
+              />
+            </div>
+          ))}
+          
+          {/* Output ports on the right */}
+          {outputs.map((output, index) => (
+            <div
+              key={`output-${output}`}
+              className="absolute right-0 flex items-center"
+              style={{
+                top: `${50 + (index * 30)}px`,
+                transform: "translateX(50%)",
+              }}
+            >
+              <div
+                className="h-3 w-3 cursor-pointer rounded-full border-2 border-[var(--accent)] bg-[var(--window-bg)] transition hover:bg-[var(--accent)]"
+                onMouseDown={() => onConnectionStart?.(id, output, true)}
+                title={`Output: ${output}`}
+              />
+            </div>
+          ))}
+        </>
+      )}
+
       {/* Resize handles */}
       {windowState !== "maximized" && !isMobile && (
         <>
@@ -318,4 +376,4 @@ export function Window({
   );
 }
 
-export type { WindowProps, WindowState };
+export type { WindowProps, WindowState, WindowConnection };

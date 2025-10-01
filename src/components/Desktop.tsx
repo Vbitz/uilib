@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, useCallback, type ReactNode, type MouseEvent } from "react";
 import { cn } from "../utils/cn";
 
 type DesktopIcon = {
@@ -8,14 +8,56 @@ type DesktopIcon = {
   onOpen: () => void;
 };
 
+type WindowConnection = {
+  id: string;
+  sourceWindowId: string;
+  targetWindowId: string;
+  sourcePort: string;
+  targetPort: string;
+};
+
 type DesktopProps = {
   icons: DesktopIcon[];
   children?: ReactNode;
   className?: string;
   taskbar?: ReactNode;
+  showConnections?: boolean;
+  connections?: WindowConnection[];
+  onConnectionsChange?: (connections: WindowConnection[]) => void;
 };
 
-export function Desktop({ icons, children, className, taskbar }: DesktopProps) {
+export function Desktop({ 
+  icons, 
+  children, 
+  className, 
+  taskbar, 
+  showConnections = false,
+  connections = [],
+  onConnectionsChange,
+}: DesktopProps) {
+  const [drawingConnection, setDrawingConnection] = useState<{
+    sourceWindowId: string;
+    sourcePort: string;
+    startX: number;
+    startY: number;
+    currentX: number;
+    currentY: number;
+  } | null>(null);
+
+  const handleMouseMove = useCallback((e: MouseEvent<HTMLDivElement>) => {
+    if (drawingConnection) {
+      setDrawingConnection(prev => prev ? {
+        ...prev,
+        currentX: e.clientX,
+        currentY: e.clientY,
+      } : null);
+    }
+  }, [drawingConnection]);
+
+  const handleMouseUp = useCallback(() => {
+    setDrawingConnection(null);
+  }, []);
+
   return (
     <div
       className={cn(
@@ -27,6 +69,8 @@ export function Desktop({ icons, children, className, taskbar }: DesktopProps) {
           "linear-gradient(90deg, var(--desktop-grid) 1px, transparent 1px), linear-gradient(0deg, var(--desktop-grid) 1px, transparent 1px)",
         backgroundSize: "32px 32px",
       }}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
     >
       {/* Taskbar */}
       {taskbar}
@@ -65,8 +109,44 @@ export function Desktop({ icons, children, className, taskbar }: DesktopProps) {
       )}>
         {children}
       </div>
+
+      {/* Connection lines SVG overlay */}
+      {showConnections && (
+        <svg 
+          className="pointer-events-none absolute inset-0 z-20"
+          style={{ top: taskbar ? "42px" : 0 }}
+        >
+          {/* Draw existing connections */}
+          {connections.map(conn => (
+            <line
+              key={conn.id}
+              x1={0}
+              y1={0}
+              x2={100}
+              y2={100}
+              stroke="var(--accent)"
+              strokeWidth="2"
+              strokeDasharray="4 2"
+            />
+          ))}
+          
+          {/* Draw connection being created */}
+          {drawingConnection && (
+            <line
+              x1={drawingConnection.startX}
+              y1={drawingConnection.startY}
+              x2={drawingConnection.currentX}
+              y2={drawingConnection.currentY}
+              stroke="var(--accent)"
+              strokeWidth="2"
+              strokeDasharray="4 2"
+              opacity="0.6"
+            />
+          )}
+        </svg>
+      )}
     </div>
   );
 }
 
-export type { DesktopIcon, DesktopProps };
+export type { DesktopIcon, DesktopProps, WindowConnection };

@@ -125,6 +125,8 @@ function Workspace() {
   const [openWindows, setOpenWindows] = useState<Set<string>>(new Set());
   const [focusedWindow, setFocusedWindow] = useState<string | null>(null);
   const [windowStates, setWindowStates] = useState<Record<string, WindowState>>({});
+  const [nodeViewMode, setNodeViewMode] = useState(false);
+  const [connections, setConnections] = useState<any[]>([]);
   
   const openWindow = useCallback((windowId: string) => {
     setOpenWindows(prev => new Set(prev).add(windowId));
@@ -212,10 +214,29 @@ function Workspace() {
     });
   }, [openWindows, desktopIcons, windowStates, focusedWindow, focusWindow]);
 
+  // Define window ports for node view
+  const windowPorts: Record<string, { inputs: string[]; outputs: string[] }> = {
+    buttons: { inputs: [], outputs: ["click"] },
+    forms: { inputs: ["data"], outputs: ["submit"] },
+    tables: { inputs: ["data"], outputs: ["select"] },
+    navigation: { inputs: [], outputs: ["navigate"] },
+    theme: { inputs: [], outputs: ["theme-change"] },
+    workflow: { inputs: ["trigger"], outputs: ["complete"] },
+  };
+
   return (
     <Desktop 
       icons={desktopIcons}
-      taskbar={openWindows.size > 0 ? <Taskbar items={taskbarItems} /> : undefined}
+      taskbar={openWindows.size > 0 ? (
+        <Taskbar 
+          items={taskbarItems} 
+          nodeViewMode={nodeViewMode}
+          onNodeViewToggle={() => setNodeViewMode(!nodeViewMode)}
+        />
+      ) : undefined}
+      showConnections={nodeViewMode}
+      connections={connections}
+      onConnectionsChange={setConnections}
     >
       {/* Buttons Window */}
       {openWindows.has("buttons") && (
@@ -230,6 +251,9 @@ function Workspace() {
           focused={focusedWindow === "buttons"}
           state={windowStates["buttons"]}
           onStateChange={(state) => updateWindowState("buttons", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.buttons.inputs}
+          outputs={windowPorts.buttons.outputs}
         >
           <div className="space-y-4">
             <div>
@@ -273,6 +297,9 @@ function Workspace() {
           focused={focusedWindow === "forms"}
           state={windowStates["forms"]}
           onStateChange={(state) => updateWindowState("forms", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.forms.inputs}
+          outputs={windowPorts.forms.outputs}
         >
           <div className="space-y-4">
             <p className="text-[0.72rem] text-muted">Designed to match editor chrome.</p>
@@ -304,6 +331,9 @@ function Workspace() {
           focused={focusedWindow === "tables"}
           state={windowStates["tables"]}
           onStateChange={(state) => updateWindowState("tables", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.tables.inputs}
+          outputs={windowPorts.tables.outputs}
         >
           <div className="space-y-3">
             <p className="text-[0.72rem] text-muted">Track delivery readiness across your engineering org.</p>
@@ -330,6 +360,9 @@ function Workspace() {
           focused={focusedWindow === "navigation"}
           state={windowStates["navigation"]}
           onStateChange={(state) => updateWindowState("navigation", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.navigation.inputs}
+          outputs={windowPorts.navigation.outputs}
         >
           <div className="space-y-6">
             <div>
@@ -388,6 +421,9 @@ function Workspace() {
           focused={focusedWindow === "theme"}
           state={windowStates["theme"]}
           onStateChange={(state) => updateWindowState("theme", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.theme.inputs}
+          outputs={windowPorts.theme.outputs}
         >
           <div className="space-y-6">
             <div>
@@ -450,6 +486,9 @@ function Workspace() {
           focused={focusedWindow === "workflow"}
           state={windowStates["workflow"]}
           onStateChange={(state) => updateWindowState("workflow", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.workflow.inputs}
+          outputs={windowPorts.workflow.outputs}
         >
           <div className="space-y-4">
             <p className="text-[0.72rem] text-muted">
