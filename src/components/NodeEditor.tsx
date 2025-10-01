@@ -62,10 +62,10 @@ type DragState = {
 };
 
 const statusClasses: Record<NodeStatus, string> = {
-  default: "border-slate-700 bg-slate-900 text-slate-200",
-  success: "border-emerald-500/60 bg-emerald-500/10 text-emerald-100",
-  warning: "border-amber-500/60 bg-amber-500/10 text-amber-100",
-  danger: "border-rose-500/60 bg-rose-500/10 text-rose-100",
+  default: "border-[var(--control-border)] bg-[var(--control-bg)] text-subtle",
+  success: "border-[#4c9460] bg-[#15241b] text-[#b5f6c8]",
+  warning: "border-[#b4803b] bg-[#2a2012] text-[#f5d7a4]",
+  danger: "border-[#c44d5a] bg-[#301319] text-[#f5b7c9]",
 };
 
 export function NodeEditor({
@@ -246,7 +246,7 @@ export function NodeEditor({
       )}
       <div
         ref={editorRef}
-        className="relative h-[540px] flex-1 overflow-hidden rounded-xl border border-slate-800 bg-slate-950"
+        className="relative h-[540px] flex-1 overflow-hidden border border-[var(--window-border)] bg-[var(--window-bg)] shadow-[var(--window-shadow)]"
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
@@ -296,7 +296,7 @@ export function NodeEditor({
                 height,
               }}
               className={cn(
-                "group absolute flex cursor-pointer flex-col gap-2 rounded-xl border px-4 py-3 text-sm shadow-lg transition",
+                "group absolute flex cursor-pointer flex-col gap-2 border px-4 py-3 text-sm shadow-lg transition",
                 nodeClasses,
                 isSelected && "ring-2 ring-[var(--accent)]"
               )}
@@ -308,32 +308,32 @@ export function NodeEditor({
               }}
               onPointerDown={event => handlePointerDown(event, node)}
             >
-              <header className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.18em] text-slate-300/70">
+              <header className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.18em] text-muted">
                 <span>NODE</span>
-                <span className="rounded bg-black/30 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.24em] text-white/70">
+                <span className="border border-[var(--control-border)] bg-control px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.24em]">
                   {node.status?.toUpperCase() ?? "DEFAULT"}
                 </span>
               </header>
               <div className="flex flex-1 flex-col gap-1">
-                <div className="text-base font-medium text-white">{node.label}</div>
-                {node.description && <div className="text-xs text-slate-300/80">{node.description}</div>}
+                <div className="text-base font-medium">{node.label}</div>
+                {node.description && <div className="text-xs text-muted">{node.description}</div>}
                 {node.metadata && (
-                  <div className="mt-auto grid grid-cols-2 gap-1 text-[11px] text-slate-300/70">
+                  <div className="mt-auto grid grid-cols-2 gap-1 text-[11px] text-muted">
                     {Object.entries(node.metadata).slice(0, 4).map(([key, value]) => (
-                      <div key={key} className="flex flex-col rounded border border-white/5 bg-white/5 px-2 py-1">
-                        <span className="text-[10px] uppercase tracking-[0.12em] text-slate-400">{key}</span>
-                        <span className="truncate text-xs text-white/90">{String(value)}</span>
+                      <div key={key} className="flex flex-col border border-[var(--control-border)] bg-control px-2 py-1">
+                        <span className="text-[10px] uppercase tracking-[0.12em] text-muted">{key}</span>
+                        <span className="truncate text-xs">{String(value)}</span>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
-              <footer className="flex items-center justify-between text-[10px] font-medium text-slate-400">
+              <footer className="flex items-center justify-between text-[10px] font-medium text-muted">
                 <span>Outputs</span>
-                <span className="inline-flex items-center gap-1 text-slate-300/70">
-                  <span className="h-2 w-2 rounded-full bg-[var(--accent)]" aria-hidden="true" />
+                <span className="inline-flex items-center gap-1">
+                  <span className="h-2 w-2 border border-[var(--accent)] bg-[var(--accent)]" aria-hidden="true" />
                   <span>•</span>
-                  <span className="h-2 w-2 rounded-full bg-[var(--accent)]" aria-hidden="true" />
+                  <span className="h-2 w-2 border border-[var(--accent)] bg-[var(--accent)]" aria-hidden="true" />
                 </span>
               </footer>
             </div>
@@ -352,10 +352,10 @@ function Palette({
   onAdd: (item: NodePaletteItem) => void;
 }) {
   return (
-    <div className="flex w-64 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-950 p-3 text-xs text-slate-300">
+    <div className="flex w-64 flex-col gap-3 border border-[var(--window-border)] bg-[var(--window-bg)] p-3 text-xs text-subtle shadow-[var(--window-shadow)]">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-100">Palette</h3>
-        <span className="text-[10px] uppercase tracking-[0.24em] text-slate-500">Nodes</span>
+        <h3 className="text-sm font-semibold">Palette</h3>
+        <span className="text-[10px] uppercase tracking-[0.24em] text-muted">Nodes</span>
       </div>
       <div className="flex-1 space-y-2 overflow-y-auto pr-1">
         {items.map(item => (
@@ -363,23 +363,23 @@ function Palette({
             key={item.type}
             type="button"
             onClick={() => onAdd(item)}
-            className="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-3 text-left text-xs font-medium text-slate-200 transition hover:border-[var(--accent)] hover:text-[var(--accent-muted-foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            className="w-full border border-[var(--control-border)] bg-control px-3 py-3 text-left text-xs font-medium transition hover:border-[var(--accent)] hover:bg-control-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--window-bg)]"
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-slate-100">{item.label}</span>
+              <span className="text-sm font-semibold">{item.label}</span>
               {item.badge && (
-                <span className="rounded bg-[var(--accent-muted)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--accent-muted-foreground)]">
+                <span className="border border-[var(--control-border)] bg-control px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
                   {item.badge}
                 </span>
               )}
             </div>
             {item.description && (
-              <div className="mt-1 text-[11px] text-slate-400">{item.description}</div>
+              <div className="mt-1 text-[11px] text-muted">{item.description}</div>
             )}
           </button>
         ))}
         {items.length === 0 && (
-          <div className="rounded border border-dashed border-slate-700 px-3 py-4 text-center text-[11px] text-slate-500">
+          <div className="border border-dashed border-[var(--control-border)] px-3 py-4 text-center text-[11px] text-muted">
             Add palette items to spawn new nodes.
           </div>
         )}
@@ -390,7 +390,7 @@ function Palette({
 
 function GridBackground({ gridSize }: { gridSize: number }) {
   const patternSize = gridSize * 2;
-  const background = `linear-gradient(90deg, rgba(15,23,42,0.2) 1px, transparent 1px), linear-gradient(180deg, rgba(15,23,42,0.2) 1px, transparent 1px)`;
+  const background = `linear-gradient(90deg, var(--desktop-grid) 1px, transparent 1px), linear-gradient(180deg, var(--desktop-grid) 1px, transparent 1px)`;
 
   return (
     <div
@@ -398,7 +398,7 @@ function GridBackground({ gridSize }: { gridSize: number }) {
       style={{
         backgroundImage: background,
         backgroundSize: `${patternSize}px ${patternSize}px`,
-        opacity: 0.4,
+        opacity: 0.6,
       }}
       aria-hidden="true"
     />
