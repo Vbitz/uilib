@@ -10,6 +10,7 @@ import {
   Pagination,
   Table,
   Tabs,
+  Taskbar,
   Textbox,
   ThemeProvider,
   ToastProvider,
@@ -18,6 +19,7 @@ import {
   Window,
   type DesktopIcon,
   type TableColumn,
+  type WindowState,
 } from "./components";
 
 type Task = {
@@ -122,10 +124,14 @@ function Workspace() {
   // Window management state
   const [openWindows, setOpenWindows] = useState<Set<string>>(new Set());
   const [focusedWindow, setFocusedWindow] = useState<string | null>(null);
+  const [windowStates, setWindowStates] = useState<Record<string, WindowState>>({});
+  const [nodeViewMode, setNodeViewMode] = useState(false);
+  const [connections, setConnections] = useState<any[]>([]);
   
   const openWindow = useCallback((windowId: string) => {
     setOpenWindows(prev => new Set(prev).add(windowId));
     setFocusedWindow(windowId);
+    setWindowStates(prev => ({ ...prev, [windowId]: "normal" }));
   }, []);
   
   const closeWindow = useCallback((windowId: string) => {
@@ -138,6 +144,20 @@ function Workspace() {
       setFocusedWindow(null);
     }
   }, [focusedWindow]);
+
+  const updateWindowState = useCallback((windowId: string, state: WindowState) => {
+    setWindowStates(prev => ({ ...prev, [windowId]: state }));
+    if (state === "normal" || state === "maximized") {
+      setFocusedWindow(windowId);
+    }
+  }, []);
+
+  const focusWindow = useCallback((windowId: string) => {
+    setFocusedWindow(windowId);
+    if (windowStates[windowId] === "minimized") {
+      updateWindowState(windowId, "normal");
+    }
+  }, [windowStates, updateWindowState]);
 
   // Desktop icons configuration
   const desktopIcons = useMemo<DesktopIcon[]>(() => [
@@ -179,8 +199,45 @@ function Workspace() {
     },
   ], [openWindow]);
 
+  // Generate taskbar items from open windows
+  const taskbarItems = useMemo(() => {
+    return Array.from(openWindows).map(windowId => {
+      const windowConfig = desktopIcons.find(icon => icon.id === windowId);
+      return {
+        id: windowId,
+        title: windowConfig?.label || windowId,
+        icon: windowConfig?.icon,
+        state: windowStates[windowId] || "normal",
+        focused: focusedWindow === windowId,
+        onFocus: () => focusWindow(windowId),
+      };
+    });
+  }, [openWindows, desktopIcons, windowStates, focusedWindow, focusWindow]);
+
+  // Define window ports for node view
+  const windowPorts: Record<string, { inputs: string[]; outputs: string[] }> = {
+    buttons: { inputs: [], outputs: ["click"] },
+    forms: { inputs: ["data"], outputs: ["submit"] },
+    tables: { inputs: ["data"], outputs: ["select"] },
+    navigation: { inputs: [], outputs: ["navigate"] },
+    theme: { inputs: [], outputs: ["theme-change"] },
+    workflow: { inputs: ["trigger"], outputs: ["complete"] },
+  };
+
   return (
-    <Desktop icons={desktopIcons}>
+    <Desktop 
+      icons={desktopIcons}
+      taskbar={openWindows.size > 0 ? (
+        <Taskbar 
+          items={taskbarItems} 
+          nodeViewMode={nodeViewMode}
+          onNodeViewToggle={() => setNodeViewMode(!nodeViewMode)}
+        />
+      ) : undefined}
+      showConnections={nodeViewMode}
+      connections={connections}
+      onConnectionsChange={setConnections}
+    >
       {/* Buttons Window */}
       {openWindows.has("buttons") && (
         <Window
@@ -190,8 +247,13 @@ function Workspace() {
           initialPosition={{ x: 50, y: 50 }}
           initialSize={{ width: 500, height: 400 }}
           onClose={() => closeWindow("buttons")}
-          onFocus={() => setFocusedWindow("buttons")}
+          onFocus={() => focusWindow("buttons")}
           focused={focusedWindow === "buttons"}
+          state={windowStates["buttons"]}
+          onStateChange={(state) => updateWindowState("buttons", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.buttons.inputs}
+          outputs={windowPorts.buttons.outputs}
         >
           <div className="space-y-4">
             <div>
@@ -231,8 +293,13 @@ function Workspace() {
           initialPosition={{ x: 100, y: 100 }}
           initialSize={{ width: 500, height: 450 }}
           onClose={() => closeWindow("forms")}
-          onFocus={() => setFocusedWindow("forms")}
+          onFocus={() => focusWindow("forms")}
           focused={focusedWindow === "forms"}
+          state={windowStates["forms"]}
+          onStateChange={(state) => updateWindowState("forms", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.forms.inputs}
+          outputs={windowPorts.forms.outputs}
         >
           <div className="space-y-4">
             <p className="text-[0.72rem] text-muted">Designed to match editor chrome.</p>
@@ -260,8 +327,13 @@ function Workspace() {
           initialPosition={{ x: 150, y: 150 }}
           initialSize={{ width: 700, height: 450 }}
           onClose={() => closeWindow("tables")}
-          onFocus={() => setFocusedWindow("tables")}
+          onFocus={() => focusWindow("tables")}
           focused={focusedWindow === "tables"}
+          state={windowStates["tables"]}
+          onStateChange={(state) => updateWindowState("tables", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.tables.inputs}
+          outputs={windowPorts.tables.outputs}
         >
           <div className="space-y-3">
             <p className="text-[0.72rem] text-muted">Track delivery readiness across your engineering org.</p>
@@ -284,8 +356,13 @@ function Workspace() {
           initialPosition={{ x: 200, y: 100 }}
           initialSize={{ width: 550, height: 500 }}
           onClose={() => closeWindow("navigation")}
-          onFocus={() => setFocusedWindow("navigation")}
+          onFocus={() => focusWindow("navigation")}
           focused={focusedWindow === "navigation"}
+          state={windowStates["navigation"]}
+          onStateChange={(state) => updateWindowState("navigation", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.navigation.inputs}
+          outputs={windowPorts.navigation.outputs}
         >
           <div className="space-y-6">
             <div>
@@ -340,8 +417,13 @@ function Workspace() {
           initialPosition={{ x: 250, y: 150 }}
           initialSize={{ width: 450, height: 350 }}
           onClose={() => closeWindow("theme")}
-          onFocus={() => setFocusedWindow("theme")}
+          onFocus={() => focusWindow("theme")}
           focused={focusedWindow === "theme"}
+          state={windowStates["theme"]}
+          onStateChange={(state) => updateWindowState("theme", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.theme.inputs}
+          outputs={windowPorts.theme.outputs}
         >
           <div className="space-y-6">
             <div>
@@ -400,8 +482,13 @@ function Workspace() {
           initialPosition={{ x: 300, y: 80 }}
           initialSize={{ width: 600, height: 500 }}
           onClose={() => closeWindow("workflow")}
-          onFocus={() => setFocusedWindow("workflow")}
+          onFocus={() => focusWindow("workflow")}
           focused={focusedWindow === "workflow"}
+          state={windowStates["workflow"]}
+          onStateChange={(state) => updateWindowState("workflow", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.workflow.inputs}
+          outputs={windowPorts.workflow.outputs}
         >
           <div className="space-y-4">
             <p className="text-[0.72rem] text-muted">
