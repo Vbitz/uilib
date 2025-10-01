@@ -12,9 +12,10 @@ type DesktopProps = {
   icons: DesktopIcon[];
   children?: ReactNode;
   className?: string;
+  taskbar?: ReactNode;
 };
 
-export function Desktop({ icons, children, className }: DesktopProps) {
+export function Desktop({ icons, children, className, taskbar }: DesktopProps) {
   return (
     <div
       className={cn(
@@ -27,8 +28,14 @@ export function Desktop({ icons, children, className }: DesktopProps) {
         backgroundSize: "32px 32px",
       }}
     >
+      {/* Taskbar */}
+      {taskbar}
+
       {/* Desktop icons grid */}
-      <div className="grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-4 p-4 content-start">
+      <div className={cn(
+        "grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-4 p-4 content-start",
+        taskbar && "pt-16"
+      )}>
         {icons.map((icon) => (
           <button
             key={icon.id}
@@ -52,7 +59,10 @@ export function Desktop({ icons, children, className }: DesktopProps) {
       </div>
 
       {/* Windows layer */}
-      <div className="pointer-events-none absolute inset-0 z-10">
+      <div className={cn(
+        "pointer-events-none absolute inset-0 z-10",
+        taskbar && "top-[42px]"
+      )}>
         {children}
       </div>
     </div>

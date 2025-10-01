@@ -12,6 +12,7 @@ export * from "./NodeEditor";
 export * from "./Pagination";
 export * from "./Sidebar";
 export * from "./Table";
+export * from "./Taskbar";
 export * from "./Textbox";
 export * from "./Tabs";
 export * from "./Toolbar";
