@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased transition-colors duration-300;
+    @apply dark:bg-slate-950 dark:text-slate-100;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  *, *::before, *::after {
+    @apply border-slate-200 dark:border-slate-700;
+  }
+}
