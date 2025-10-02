@@ -70,7 +70,7 @@ export function Window({
 
   const windowState = externalState ?? internalState;
 
-  // Mobile detection
+  // Mobile detection and initial positioning
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 768 || 'ontouchstart' in window;
@@ -88,6 +88,29 @@ export function Window({
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, [externalState, windowState]);
+
+  // Constrain initial position to screen bounds on desktop (runs once on mount)
+  useEffect(() => {
+    const mobile = window.innerWidth < 768 || 'ontouchstart' in window;
+    if (!mobile) {
+      // On desktop, ensure initial position is within screen bounds
+      const constrainedX = Math.min(
+        Math.max(0, initialPosition.x),
+        Math.max(0, window.innerWidth - initialSize.width)
+      );
+      const constrainedY = Math.min(
+        Math.max(0, initialPosition.y),
+        Math.max(0, window.innerHeight - initialSize.height)
+      );
+      
+      // Only update if position needs adjustment
+      if (constrainedX !== initialPosition.x || constrainedY !== initialPosition.y) {
+        setPosition({ x: constrainedX, y: constrainedY });
+        normalBoundsRef.current.position = { x: constrainedX, y: constrainedY };
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   const handleMouseDown = useCallback((e: MouseEvent<HTMLDivElement>) => {
     if (e.button !== 0) return; // Only left click
