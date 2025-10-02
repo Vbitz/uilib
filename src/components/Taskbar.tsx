@@ -43,21 +43,29 @@ export function Taskbar({ items, className, nodeViewMode = false, onNodeViewTogg
           <span className="font-semibold">{item.title}</span>
         </button>
       ))}
+
+      {items.length === 0 && (
+        <span className="rounded border border-dashed border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.16em] text-muted">
+          No windows open
+        </span>
+      )}
       
       {/* Spacer */}
       <div className="flex-1" />
       
       {/* Node View Toggle */}
-      {onNodeViewToggle && items.length > 0 && (
+      {onNodeViewToggle && (
         <button
           type="button"
           onClick={onNodeViewToggle}
           className={cn(
             "flex items-center gap-2 border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-1.5 text-[0.7rem] uppercase tracking-[0.16em] transition",
             "hover:bg-[var(--control-bg-hover)]",
-            nodeViewMode && "border-[var(--accent)] bg-[var(--accent)] text-[var(--window-bg)]"
+            nodeViewMode && "border-[var(--accent)] bg-[var(--accent)] text-[var(--window-bg)]",
+            !items.length && "opacity-60"
           )}
           title="Toggle Node View Mode"
+          disabled={!items.length}
         >
           <svg viewBox="0 0 16 16" fill="currentColor" className="h-3 w-3">
             <circle cx="4" cy="4" r="2" />

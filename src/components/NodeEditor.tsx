@@ -52,7 +52,12 @@ type NodeEditorProps = {
   readonly?: boolean;
   gridSize?: number;
   snapToGrid?: boolean;
+  viewportHeight?: number;
 };
+
+const EMPTY_NODES: EditorNode[] = [];
+const EMPTY_EDGES: EditorEdge[] = [];
+const EMPTY_PALETTE: NodePaletteItem[] = [];
 
 type DragState = {
   id: string;
@@ -69,9 +74,9 @@ const statusClasses: Record<NodeStatus, string> = {
 };
 
 export function NodeEditor({
-  nodes = [],
-  edges = [],
-  palette = [],
+  nodes = EMPTY_NODES,
+  edges = EMPTY_EDGES,
+  palette = EMPTY_PALETTE,
   selectedNodeId,
   onSelectNode,
   onNodesChange,
@@ -81,6 +86,7 @@ export function NodeEditor({
   readonly = false,
   gridSize = 16,
   snapToGrid = true,
+  viewportHeight = 540,
 }: NodeEditorProps) {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const [internalNodes, setInternalNodes] = useState<EditorNode[]>(nodes);
@@ -90,12 +96,12 @@ export function NodeEditor({
 
   useEffect(() => {
     if (onNodesChange) return;
-    setInternalNodes(nodes);
+    setInternalNodes(prev => (prev === nodes ? prev : nodes));
   }, [nodes, onNodesChange]);
 
   useEffect(() => {
     if (onEdgesChange) return;
-    setInternalEdges(edges);
+    setInternalEdges(prev => (prev === edges ? prev : edges));
   }, [edges, onEdgesChange]);
 
   const currentNodes = onNodesChange ? nodes : internalNodes;
@@ -246,7 +252,8 @@ export function NodeEditor({
       )}
       <div
         ref={editorRef}
-        className="relative h-[540px] flex-1 overflow-hidden border border-[var(--window-border)] bg-[var(--window-bg)] shadow-[var(--window-shadow)]"
+        className="relative flex-1 overflow-hidden border border-[var(--window-border)] bg-[var(--window-bg)] shadow-[var(--window-shadow)]"
+        style={{ height: viewportHeight }}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >

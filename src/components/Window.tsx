@@ -3,6 +3,9 @@ import { cn } from "../utils/cn";
 
 type WindowState = "normal" | "maximized" | "minimized";
 
+const MIN_WIDTH = 300;
+const MIN_HEIGHT = 200;
+
 type WindowConnection = {
   sourceWindowId: string;
   targetWindowId: string;
@@ -131,25 +134,33 @@ export function Window({
       const deltaX = e.clientX - resizeRef.current.startX;
       const deltaY = e.clientY - resizeRef.current.startY;
 
+      if (resizeDirection === "bottom") {
+        const newWidth = Math.max(MIN_WIDTH, resizeRef.current.startWidth + deltaX);
+        const newHeight = Math.max(MIN_HEIGHT, resizeRef.current.startHeight + deltaY);
+        setSize({ width: newWidth, height: newHeight });
+        setPosition({ x: resizeRef.current.startPosX, y: resizeRef.current.startPosY });
+        return;
+      }
+
       let newWidth = resizeRef.current.startWidth;
       let newHeight = resizeRef.current.startHeight;
       let newX = resizeRef.current.startPosX;
       let newY = resizeRef.current.startPosY;
 
       if (resizeDirection.includes("e")) {
-        newWidth = Math.max(300, resizeRef.current.startWidth + deltaX);
+        newWidth = Math.max(MIN_WIDTH, resizeRef.current.startWidth + deltaX);
       }
       if (resizeDirection.includes("w")) {
-        const maxDelta = resizeRef.current.startWidth - 300;
+        const maxDelta = resizeRef.current.startWidth - MIN_WIDTH;
         const constrainedDelta = Math.min(deltaX, maxDelta);
         newWidth = resizeRef.current.startWidth - constrainedDelta;
         newX = resizeRef.current.startPosX + constrainedDelta;
       }
       if (resizeDirection.includes("s")) {
-        newHeight = Math.max(200, resizeRef.current.startHeight + deltaY);
+        newHeight = Math.max(MIN_HEIGHT, resizeRef.current.startHeight + deltaY);
       }
       if (resizeDirection.includes("n")) {
-        const maxDelta = resizeRef.current.startHeight - 200;
+        const maxDelta = resizeRef.current.startHeight - MIN_HEIGHT;
         const constrainedDelta = Math.min(deltaY, maxDelta);
         newHeight = resizeRef.current.startHeight - constrainedDelta;
         newY = resizeRef.current.startPosY + constrainedDelta;
@@ -232,12 +243,14 @@ export function Window({
         top: `${position.y}px`,
         width: `${size.width}px`,
         height: `${size.height}px`,
+        minWidth: `${MIN_WIDTH}px`,
+        minHeight: `${MIN_HEIGHT}px`,
       }}
       onClick={onFocus}
     >
       {/* Window header */}
       <div
-        className="flex cursor-move items-center gap-2 border-b border-[var(--window-header-border)] bg-[var(--window-header-bg)] px-3 py-2 text-[0.72rem] uppercase tracking-[0.18em] text-[var(--window-header-foreground)]"
+        className="flex cursor-move select-none items-center gap-2 border-b border-[var(--window-header-border)] bg-[var(--window-header-bg)] px-3 py-2 text-[0.72rem] uppercase tracking-[0.18em] text-[var(--window-header-foreground)]"
         onMouseDown={handleMouseDown}
       >
         {icon && <div className="flex h-4 w-4 items-center justify-center">{icon}</div>}
@@ -334,43 +347,13 @@ export function Window({
 
       {/* Resize handles */}
       {windowState !== "maximized" && !isMobile && (
-        <>
-          {/* Corner handles */}
-          <div
-            className="absolute bottom-0 right-0 h-3 w-3 cursor-nwse-resize"
-            onMouseDown={(e) => handleResizeStart(e, "se")}
-          />
-          <div
-            className="absolute bottom-0 left-0 h-3 w-3 cursor-nesw-resize"
-            onMouseDown={(e) => handleResizeStart(e, "sw")}
-          />
-          <div
-            className="absolute top-0 right-0 h-3 w-3 cursor-nesw-resize"
-            onMouseDown={(e) => handleResizeStart(e, "ne")}
-          />
-          <div
-            className="absolute top-0 left-0 h-3 w-3 cursor-nwse-resize"
-            onMouseDown={(e) => handleResizeStart(e, "nw")}
-          />
-          
-          {/* Edge handles */}
-          <div
-            className="absolute bottom-0 left-3 right-3 h-1 cursor-ns-resize"
-            onMouseDown={(e) => handleResizeStart(e, "s")}
-          />
-          <div
-            className="absolute top-0 left-3 right-3 h-1 cursor-ns-resize"
-            onMouseDown={(e) => handleResizeStart(e, "n")}
-          />
-          <div
-            className="absolute left-0 top-3 bottom-3 w-1 cursor-ew-resize"
-            onMouseDown={(e) => handleResizeStart(e, "w")}
-          />
-          <div
-            className="absolute right-0 top-3 bottom-3 w-1 cursor-ew-resize"
-            onMouseDown={(e) => handleResizeStart(e, "e")}
-          />
-        </>
+        <div
+          className="window-resize-handle pointer-events-auto absolute bottom-0 left-1/2 h-5 w-28 -translate-x-1/2 cursor-nwse-resize"
+          onMouseDown={event => handleResizeStart(event, "bottom")}
+          role="presentation"
+        >
+          <span className="pointer-events-none absolute left-1/2 top-1/2 h-1 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--toolbar-border)]" />
+        </div>
       )}
     </div>
   );

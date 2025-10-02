@@ -57,11 +57,11 @@ type ToastContextValue = {
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 
 const variantStyles: Record<ToastVariant, string> = {
-  default: "border-[var(--control-border)] bg-[var(--window-bg)] text-subtle",
-  success: "border-[#4c9460] bg-[#15241b] text-[#b5f6c8]",
-  warning: "border-[#b4803b] bg-[#2a2012] text-[#f5d7a4]",
-  danger: "border-[#c44d5a] bg-[#301319] text-[#f5b7c9]",
-  info: "border-[#5aa0b7] bg-[#142630] text-[#bde6f6]",
+  default: "border-[var(--toast-default-border)] bg-[var(--toast-default-bg)] text-[var(--toast-default-foreground)]",
+  success: "border-[var(--toast-success-border)] bg-[var(--toast-success-bg)] text-[var(--toast-success-foreground)]",
+  warning: "border-[var(--toast-warning-border)] bg-[var(--toast-warning-bg)] text-[var(--toast-warning-foreground)]",
+  danger: "border-[var(--toast-danger-border)] bg-[var(--toast-danger-bg)] text-[var(--toast-danger-foreground)]",
+  info: "border-[var(--toast-info-border)] bg-[var(--toast-info-bg)] text-[var(--toast-info-foreground)]",
 };
 
 const placementStyles: Record<ToastPlacement, string> = {
