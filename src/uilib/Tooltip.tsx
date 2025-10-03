@@ -8,7 +8,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type TooltipPlacement = "top" | "bottom" | "left" | "right";
 

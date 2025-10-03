@@ -7,7 +7,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type NodeStatus = "default" | "success" | "warning" | "danger";
 
@@ -36,7 +36,7 @@ type NodePaletteItem = {
   accent?: string;
   badge?: ReactNode;
   defaultSize?: { width: number; height: number };
-  defaults?: Partial<Omit<EditorNode, "id" | "position" | "label" | "width" | "height" >>;
+  defaults?: Partial<Omit<EditorNode, "id" | "position" | "label" | "width" | "height">>;
 };
 
 type NodeEditorProps = {
@@ -198,12 +198,12 @@ export function NodeEditor({
         nodesState.map(node =>
           node.id === dragState.id
             ? {
-                ...node,
-                position: {
-                  x: Math.max(0, nextX),
-                  y: Math.max(0, nextY),
-                },
-              }
+              ...node,
+              position: {
+                x: Math.max(0, nextX),
+                y: Math.max(0, nextY),
+              },
+            }
             : node
         )
       );

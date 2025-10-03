@@ -1,5 +1,5 @@
 import { forwardRef, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type ReactNode } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type BreadcrumbItemBase = {
   id: string;

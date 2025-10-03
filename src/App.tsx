@@ -39,8 +39,8 @@ import {
   type StatusBarItem,
   type TableColumn,
   type WindowState,
-} from "./components";
-import { cn } from "./utils/cn";
+} from "./uilib";
+import { cn } from "./uilib/utils/cn";
 
 type Task = {
   name: string;
@@ -483,7 +483,7 @@ const TreeIcon = () => (
 function Workspace() {
   const { mode, accent, toggleMode, setAccent } = useTheme();
   const { notify } = useToast();
-  
+
   // Window management state
   const [openWindows, setOpenWindows] = useState<Set<string>>(new Set());
   const [focusedWindow, setFocusedWindow] = useState<string | null>(null);
@@ -568,13 +568,13 @@ function Workspace() {
     <div className="space-y-4">
       <p className="text-[0.72rem] text-muted">Designed to match editor chrome.</p>
       <div className="space-y-3">
-        <Textbox label="Repository" value="astra/nebula" onChange={() => {}} />
-        <Textbox label="Owner" value="Casey Simmons" disabled onChange={() => {}} />
+        <Textbox label="Repository" value="astra/nebula" onChange={() => { }} />
+        <Textbox label="Owner" value="Casey Simmons" disabled onChange={() => { }} />
         <Textbox
           label="API Key"
           type="password"
           value="••••••••••••"
-          onChange={() => {}}
+          onChange={() => { }}
           endSlot={<Button size="sm">Reveal</Button>}
         />
         <Select
@@ -631,7 +631,7 @@ function Workspace() {
         <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
           Pagination
         </h3>
-        <Pagination page={2} pageCount={12} onPageChange={() => {}} siblings={1} />
+        <Pagination page={2} pageCount={12} onPageChange={() => { }} siblings={1} />
       </div>
       <div>
         <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
@@ -1069,7 +1069,7 @@ function Workspace() {
     setFocusedWindow(windowId);
     setWindowStates(prev => ({ ...prev, [windowId]: "normal" }));
   }, []);
-  
+
   const closeWindow = useCallback((windowId: string) => {
     setOpenWindows(prev => {
       const next = new Set(prev);
@@ -1828,383 +1828,383 @@ function Workspace() {
             connections={connections}
             onConnectionsChange={setConnections}
           >
-      {/* Buttons Window */}
-      {openWindows.has("buttons") && (
-      <Window
-          id="buttons"
-          title="Buttons"
-          icon={<ButtonsIcon />}
-          initialPosition={{ x: 50, y: 50 }}
-          initialSize={{ width: 500, height: 400 }}
-          onClose={() => closeWindow("buttons")}
-          onFocus={() => focusWindow("buttons")}
-          focused={focusedWindow === "buttons"}
-          state={windowStates["buttons"]}
-          onStateChange={(state) => updateWindowState("buttons", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.buttons.inputs}
-          outputs={windowPorts.buttons.outputs}
-        >
-          {renderButtonsContent()}
-        </Window>
-      )}
+            {/* Buttons Window */}
+            {openWindows.has("buttons") && (
+              <Window
+                id="buttons"
+                title="Buttons"
+                icon={<ButtonsIcon />}
+                initialPosition={{ x: 50, y: 50 }}
+                initialSize={{ width: 500, height: 400 }}
+                onClose={() => closeWindow("buttons")}
+                onFocus={() => focusWindow("buttons")}
+                focused={focusedWindow === "buttons"}
+                state={windowStates["buttons"]}
+                onStateChange={(state) => updateWindowState("buttons", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.buttons.inputs}
+                outputs={windowPorts.buttons.outputs}
+              >
+                {renderButtonsContent()}
+              </Window>
+            )}
 
-      {/* Forms Window */}
-      {openWindows.has("forms") && (
-        <Window
-          id="forms"
-          title="Form Inputs"
-          icon={<FormsIcon />}
-          initialPosition={{ x: 100, y: 100 }}
-          initialSize={{ width: 500, height: 450 }}
-          onClose={() => closeWindow("forms")}
-          onFocus={() => focusWindow("forms")}
-          focused={focusedWindow === "forms"}
-          state={windowStates["forms"]}
-          onStateChange={(state) => updateWindowState("forms", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.forms.inputs}
-          outputs={windowPorts.forms.outputs}
-        >
-          {renderFormsContent()}
-        </Window>
-      )}
+            {/* Forms Window */}
+            {openWindows.has("forms") && (
+              <Window
+                id="forms"
+                title="Form Inputs"
+                icon={<FormsIcon />}
+                initialPosition={{ x: 100, y: 100 }}
+                initialSize={{ width: 500, height: 450 }}
+                onClose={() => closeWindow("forms")}
+                onFocus={() => focusWindow("forms")}
+                focused={focusedWindow === "forms"}
+                state={windowStates["forms"]}
+                onStateChange={(state) => updateWindowState("forms", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.forms.inputs}
+                outputs={windowPorts.forms.outputs}
+              >
+                {renderFormsContent()}
+              </Window>
+            )}
 
-      {/* Tables Window */}
-      {openWindows.has("tables") && (
-        <Window
-          id="tables"
-          title="Data Tables"
-          icon={<TablesIcon />}
-          initialPosition={{ x: 150, y: 150 }}
-          initialSize={{ width: 700, height: 450 }}
-          onClose={() => closeWindow("tables")}
-          onFocus={() => focusWindow("tables")}
-          focused={focusedWindow === "tables"}
-          state={windowStates["tables"]}
-          onStateChange={(state) => updateWindowState("tables", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.tables.inputs}
-          outputs={windowPorts.tables.outputs}
-        >
-          {renderTablesContent()}
-        </Window>
-      )}
+            {/* Tables Window */}
+            {openWindows.has("tables") && (
+              <Window
+                id="tables"
+                title="Data Tables"
+                icon={<TablesIcon />}
+                initialPosition={{ x: 150, y: 150 }}
+                initialSize={{ width: 700, height: 450 }}
+                onClose={() => closeWindow("tables")}
+                onFocus={() => focusWindow("tables")}
+                focused={focusedWindow === "tables"}
+                state={windowStates["tables"]}
+                onStateChange={(state) => updateWindowState("tables", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.tables.inputs}
+                outputs={windowPorts.tables.outputs}
+              >
+                {renderTablesContent()}
+              </Window>
+            )}
 
-      {/* Navigation Window */}
-      {openWindows.has("navigation") && (
-        <Window
-          id="navigation"
-          title="Navigation Components"
-          icon={<NavigationIcon />}
-          initialPosition={{ x: 200, y: 100 }}
-          initialSize={{ width: 550, height: 500 }}
-          onClose={() => closeWindow("navigation")}
-          onFocus={() => focusWindow("navigation")}
-          focused={focusedWindow === "navigation"}
-          state={windowStates["navigation"]}
-          onStateChange={(state) => updateWindowState("navigation", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.navigation.inputs}
-          outputs={windowPorts.navigation.outputs}
-        >
-          {renderNavigationContent()}
-        </Window>
-      )}
+            {/* Navigation Window */}
+            {openWindows.has("navigation") && (
+              <Window
+                id="navigation"
+                title="Navigation Components"
+                icon={<NavigationIcon />}
+                initialPosition={{ x: 200, y: 100 }}
+                initialSize={{ width: 550, height: 500 }}
+                onClose={() => closeWindow("navigation")}
+                onFocus={() => focusWindow("navigation")}
+                focused={focusedWindow === "navigation"}
+                state={windowStates["navigation"]}
+                onStateChange={(state) => updateWindowState("navigation", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.navigation.inputs}
+                outputs={windowPorts.navigation.outputs}
+              >
+                {renderNavigationContent()}
+              </Window>
+            )}
 
-      {/* Accordion Window */}
-      {openWindows.has("accordion") && (
-        <Window
-          id="accordion"
-          title="Accordion Panels"
-          icon={<AccordionIcon />}
-          initialPosition={{ x: 320, y: 140 }}
-          initialSize={{ width: 420, height: 360 }}
-          onClose={() => closeWindow("accordion")}
-          onFocus={() => focusWindow("accordion")}
-          focused={focusedWindow === "accordion"}
-          state={windowStates["accordion"]}
-          onStateChange={state => updateWindowState("accordion", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.accordion.inputs}
-          outputs={windowPorts.accordion.outputs}
-        >
-          {renderAccordionContent()}
-        </Window>
-      )}
+            {/* Accordion Window */}
+            {openWindows.has("accordion") && (
+              <Window
+                id="accordion"
+                title="Accordion Panels"
+                icon={<AccordionIcon />}
+                initialPosition={{ x: 320, y: 140 }}
+                initialSize={{ width: 420, height: 360 }}
+                onClose={() => closeWindow("accordion")}
+                onFocus={() => focusWindow("accordion")}
+                focused={focusedWindow === "accordion"}
+                state={windowStates["accordion"]}
+                onStateChange={state => updateWindowState("accordion", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.accordion.inputs}
+                outputs={windowPorts.accordion.outputs}
+              >
+                {renderAccordionContent()}
+              </Window>
+            )}
 
-      {/* Cards Window */}
-      {openWindows.has("cards") && (
-        <Window
-          id="cards"
-          title="Card Layouts"
-          icon={<CardsIcon />}
-          initialPosition={{ x: 120, y: 360 }}
-          initialSize={{ width: 520, height: 420 }}
-          onClose={() => closeWindow("cards")}
-          onFocus={() => focusWindow("cards")}
-          focused={focusedWindow === "cards"}
-          state={windowStates["cards"]}
-          onStateChange={state => updateWindowState("cards", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.cards.inputs}
-          outputs={windowPorts.cards.outputs}
-        >
-          {renderCardsContent()}
-        </Window>
-      )}
+            {/* Cards Window */}
+            {openWindows.has("cards") && (
+              <Window
+                id="cards"
+                title="Card Layouts"
+                icon={<CardsIcon />}
+                initialPosition={{ x: 120, y: 360 }}
+                initialSize={{ width: 520, height: 420 }}
+                onClose={() => closeWindow("cards")}
+                onFocus={() => focusWindow("cards")}
+                focused={focusedWindow === "cards"}
+                state={windowStates["cards"]}
+                onStateChange={state => updateWindowState("cards", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.cards.inputs}
+                outputs={windowPorts.cards.outputs}
+              >
+                {renderCardsContent()}
+              </Window>
+            )}
 
-      {/* Command Palette Window */}
-      {openWindows.has("palette") && (
-        <Window
-          id="palette"
-          title="Command Palette"
-          icon={<PaletteIcon />}
-          initialPosition={{ x: 520, y: 360 }}
-          initialSize={{ width: 480, height: 300 }}
-          onClose={() => closeWindow("palette")}
-          onFocus={() => focusWindow("palette")}
-          focused={focusedWindow === "palette"}
-          state={windowStates["palette"]}
-          onStateChange={state => updateWindowState("palette", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.palette.inputs}
-          outputs={windowPorts.palette.outputs}
-        >
-          {renderCommandPaletteContent()}
-        </Window>
-      )}
+            {/* Command Palette Window */}
+            {openWindows.has("palette") && (
+              <Window
+                id="palette"
+                title="Command Palette"
+                icon={<PaletteIcon />}
+                initialPosition={{ x: 520, y: 360 }}
+                initialSize={{ width: 480, height: 300 }}
+                onClose={() => closeWindow("palette")}
+                onFocus={() => focusWindow("palette")}
+                focused={focusedWindow === "palette"}
+                state={windowStates["palette"]}
+                onStateChange={state => updateWindowState("palette", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.palette.inputs}
+                outputs={windowPorts.palette.outputs}
+              >
+                {renderCommandPaletteContent()}
+              </Window>
+            )}
 
-      {/* Listbox Window */}
-      {openWindows.has("listbox") && (
-        <Window
-          id="listbox"
-          title="Listbox"
-          icon={<ListboxIcon />}
-          initialPosition={{ x: 660, y: 160 }}
-          initialSize={{ width: 360, height: 320 }}
-          onClose={() => closeWindow("listbox")}
-          onFocus={() => focusWindow("listbox")}
-          focused={focusedWindow === "listbox"}
-          state={windowStates["listbox"]}
-          onStateChange={state => updateWindowState("listbox", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.listbox.inputs}
-          outputs={windowPorts.listbox.outputs}
-        >
-          {renderListboxContent()}
-        </Window>
-      )}
+            {/* Listbox Window */}
+            {openWindows.has("listbox") && (
+              <Window
+                id="listbox"
+                title="Listbox"
+                icon={<ListboxIcon />}
+                initialPosition={{ x: 660, y: 160 }}
+                initialSize={{ width: 360, height: 320 }}
+                onClose={() => closeWindow("listbox")}
+                onFocus={() => focusWindow("listbox")}
+                focused={focusedWindow === "listbox"}
+                state={windowStates["listbox"]}
+                onStateChange={state => updateWindowState("listbox", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.listbox.inputs}
+                outputs={windowPorts.listbox.outputs}
+              >
+                {renderListboxContent()}
+              </Window>
+            )}
 
-      {/* Menubar Window */}
-      {openWindows.has("menubar") && (
-        <Window
-          id="menubar"
-          title="Menubar"
-          icon={<MenubarIcon />}
-          initialPosition={{ x: 280, y: 40 }}
-          initialSize={{ width: 520, height: 260 }}
-          onClose={() => closeWindow("menubar")}
-          onFocus={() => focusWindow("menubar")}
-          focused={focusedWindow === "menubar"}
-          state={windowStates["menubar"]}
-          onStateChange={state => updateWindowState("menubar", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.menubar.inputs}
-          outputs={windowPorts.menubar.outputs}
-        >
-          {renderMenubarContent()}
-        </Window>
-      )}
+            {/* Menubar Window */}
+            {openWindows.has("menubar") && (
+              <Window
+                id="menubar"
+                title="Menubar"
+                icon={<MenubarIcon />}
+                initialPosition={{ x: 280, y: 40 }}
+                initialSize={{ width: 520, height: 260 }}
+                onClose={() => closeWindow("menubar")}
+                onFocus={() => focusWindow("menubar")}
+                focused={focusedWindow === "menubar"}
+                state={windowStates["menubar"]}
+                onStateChange={state => updateWindowState("menubar", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.menubar.inputs}
+                outputs={windowPorts.menubar.outputs}
+              >
+                {renderMenubarContent()}
+              </Window>
+            )}
 
-      {/* Navbar Window */}
-      {openWindows.has("navbar") && (
-        <Window
-          id="navbar"
-          title="Navbar"
-          icon={<NavbarIcon />}
-          initialPosition={{ x: 220, y: 420 }}
-          initialSize={{ width: 560, height: 320 }}
-          onClose={() => closeWindow("navbar")}
-          onFocus={() => focusWindow("navbar")}
-          focused={focusedWindow === "navbar"}
-          state={windowStates["navbar"]}
-          onStateChange={state => updateWindowState("navbar", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.navbar.inputs}
-          outputs={windowPorts.navbar.outputs}
-        >
-          {renderNavbarContent()}
-        </Window>
-      )}
+            {/* Navbar Window */}
+            {openWindows.has("navbar") && (
+              <Window
+                id="navbar"
+                title="Navbar"
+                icon={<NavbarIcon />}
+                initialPosition={{ x: 220, y: 420 }}
+                initialSize={{ width: 560, height: 320 }}
+                onClose={() => closeWindow("navbar")}
+                onFocus={() => focusWindow("navbar")}
+                focused={focusedWindow === "navbar"}
+                state={windowStates["navbar"]}
+                onStateChange={state => updateWindowState("navbar", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.navbar.inputs}
+                outputs={windowPorts.navbar.outputs}
+              >
+                {renderNavbarContent()}
+              </Window>
+            )}
 
-      {/* Sidebar Window */}
-      {openWindows.has("sidebar") && (
-        <Window
-          id="sidebar"
-          title="Sidebar"
-          icon={<SidebarIcon />}
-          initialPosition={{ x: 760, y: 360 }}
-          initialSize={{ width: 520, height: 400 }}
-          onClose={() => closeWindow("sidebar")}
-          onFocus={() => focusWindow("sidebar")}
-          focused={focusedWindow === "sidebar"}
-          state={windowStates["sidebar"]}
-          onStateChange={state => updateWindowState("sidebar", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.sidebar.inputs}
-          outputs={windowPorts.sidebar.outputs}
-        >
-          {renderSidebarContent()}
-        </Window>
-      )}
+            {/* Sidebar Window */}
+            {openWindows.has("sidebar") && (
+              <Window
+                id="sidebar"
+                title="Sidebar"
+                icon={<SidebarIcon />}
+                initialPosition={{ x: 760, y: 360 }}
+                initialSize={{ width: 520, height: 400 }}
+                onClose={() => closeWindow("sidebar")}
+                onFocus={() => focusWindow("sidebar")}
+                focused={focusedWindow === "sidebar"}
+                state={windowStates["sidebar"]}
+                onStateChange={state => updateWindowState("sidebar", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.sidebar.inputs}
+                outputs={windowPorts.sidebar.outputs}
+              >
+                {renderSidebarContent()}
+              </Window>
+            )}
 
-      {/* Toolbar Window */}
-      {openWindows.has("toolbar") && (
-        <Window
-          id="toolbar"
-          title="Toolbar + Ribbon"
-          icon={<ToolbarIcon />}
-          initialPosition={{ x: 420, y: 520 }}
-          initialSize={{ width: 640, height: 420 }}
-          onClose={() => closeWindow("toolbar")}
-          onFocus={() => focusWindow("toolbar")}
-          focused={focusedWindow === "toolbar"}
-          state={windowStates["toolbar"]}
-          onStateChange={state => updateWindowState("toolbar", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.toolbar.inputs}
-          outputs={windowPorts.toolbar.outputs}
-        >
-          {renderToolbarContent()}
-        </Window>
-      )}
+            {/* Toolbar Window */}
+            {openWindows.has("toolbar") && (
+              <Window
+                id="toolbar"
+                title="Toolbar + Ribbon"
+                icon={<ToolbarIcon />}
+                initialPosition={{ x: 420, y: 520 }}
+                initialSize={{ width: 640, height: 420 }}
+                onClose={() => closeWindow("toolbar")}
+                onFocus={() => focusWindow("toolbar")}
+                focused={focusedWindow === "toolbar"}
+                state={windowStates["toolbar"]}
+                onStateChange={state => updateWindowState("toolbar", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.toolbar.inputs}
+                outputs={windowPorts.toolbar.outputs}
+              >
+                {renderToolbarContent()}
+              </Window>
+            )}
 
-      {/* Tooltip Window */}
-      {openWindows.has("tooltip") && (
-        <Window
-          id="tooltip"
-          title="Tooltips"
-          icon={<TooltipIcon />}
-          initialPosition={{ x: 640, y: 520 }}
-          initialSize={{ width: 420, height: 320 }}
-          onClose={() => closeWindow("tooltip")}
-          onFocus={() => focusWindow("tooltip")}
-          focused={focusedWindow === "tooltip"}
-          state={windowStates["tooltip"]}
-          onStateChange={state => updateWindowState("tooltip", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.tooltip.inputs}
-          outputs={windowPorts.tooltip.outputs}
-        >
-          {renderTooltipContent()}
-        </Window>
-      )}
+            {/* Tooltip Window */}
+            {openWindows.has("tooltip") && (
+              <Window
+                id="tooltip"
+                title="Tooltips"
+                icon={<TooltipIcon />}
+                initialPosition={{ x: 640, y: 520 }}
+                initialSize={{ width: 420, height: 320 }}
+                onClose={() => closeWindow("tooltip")}
+                onFocus={() => focusWindow("tooltip")}
+                focused={focusedWindow === "tooltip"}
+                state={windowStates["tooltip"]}
+                onStateChange={state => updateWindowState("tooltip", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.tooltip.inputs}
+                outputs={windowPorts.tooltip.outputs}
+              >
+                {renderTooltipContent()}
+              </Window>
+            )}
 
-      {/* Modal Window */}
-      {openWindows.has("modal") && (
-        <Window
-          id="modal"
-          title="Modal Dialog"
-          icon={<ModalIcon />}
-          initialPosition={{ x: 860, y: 160 }}
-          initialSize={{ width: 420, height: 280 }}
-          onClose={() => closeWindow("modal")}
-          onFocus={() => focusWindow("modal")}
-          focused={focusedWindow === "modal"}
-          state={windowStates["modal"]}
-          onStateChange={state => updateWindowState("modal", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.modal.inputs}
-          outputs={windowPorts.modal.outputs}
-        >
-          {renderModalContent()}
-        </Window>
-      )}
+            {/* Modal Window */}
+            {openWindows.has("modal") && (
+              <Window
+                id="modal"
+                title="Modal Dialog"
+                icon={<ModalIcon />}
+                initialPosition={{ x: 860, y: 160 }}
+                initialSize={{ width: 420, height: 280 }}
+                onClose={() => closeWindow("modal")}
+                onFocus={() => focusWindow("modal")}
+                focused={focusedWindow === "modal"}
+                state={windowStates["modal"]}
+                onStateChange={state => updateWindowState("modal", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.modal.inputs}
+                outputs={windowPorts.modal.outputs}
+              >
+                {renderModalContent()}
+              </Window>
+            )}
 
-      {/* Tree View Window */}
-      {openWindows.has("tree") && (
-        <Window
-          id="tree"
-          title="Tree View"
-          icon={<TreeIcon />}
-          initialPosition={{ x: 980, y: 360 }}
-          initialSize={{ width: 420, height: 400 }}
-          onClose={() => closeWindow("tree")}
-          onFocus={() => focusWindow("tree")}
-          focused={focusedWindow === "tree"}
-          state={windowStates["tree"]}
-          onStateChange={state => updateWindowState("tree", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.tree.inputs}
-          outputs={windowPorts.tree.outputs}
-        >
-          {renderTreeContent()}
-        </Window>
-      )}
+            {/* Tree View Window */}
+            {openWindows.has("tree") && (
+              <Window
+                id="tree"
+                title="Tree View"
+                icon={<TreeIcon />}
+                initialPosition={{ x: 980, y: 360 }}
+                initialSize={{ width: 420, height: 400 }}
+                onClose={() => closeWindow("tree")}
+                onFocus={() => focusWindow("tree")}
+                focused={focusedWindow === "tree"}
+                state={windowStates["tree"]}
+                onStateChange={state => updateWindowState("tree", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.tree.inputs}
+                outputs={windowPorts.tree.outputs}
+              >
+                {renderTreeContent()}
+              </Window>
+            )}
 
-      {/* Terminal Window */}
-      {openWindows.has("terminal") && (
-        <Window
-          id="terminal"
-          title="Terminal"
-          icon={<TerminalIcon />}
-          initialPosition={{ x: 560, y: 140 }}
-          initialSize={{ width: 640, height: 380 }}
-          onClose={() => closeWindow("terminal")}
-          onFocus={() => focusWindow("terminal")}
-          focused={focusedWindow === "terminal"}
-          state={windowStates["terminal"]}
-          onStateChange={state => updateWindowState("terminal", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.terminal.inputs}
-          outputs={windowPorts.terminal.outputs}
-        >
-          {renderTerminalContent()}
-        </Window>
-      )}
+            {/* Terminal Window */}
+            {openWindows.has("terminal") && (
+              <Window
+                id="terminal"
+                title="Terminal"
+                icon={<TerminalIcon />}
+                initialPosition={{ x: 560, y: 140 }}
+                initialSize={{ width: 640, height: 380 }}
+                onClose={() => closeWindow("terminal")}
+                onFocus={() => focusWindow("terminal")}
+                focused={focusedWindow === "terminal"}
+                state={windowStates["terminal"]}
+                onStateChange={state => updateWindowState("terminal", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.terminal.inputs}
+                outputs={windowPorts.terminal.outputs}
+              >
+                {renderTerminalContent()}
+              </Window>
+            )}
 
-      {/* Theme Window */}
-      {openWindows.has("theme") && (
-        <Window
-          id="theme"
-          title="Theme Settings"
-          icon={<ThemeIcon />}
-          initialPosition={{ x: 250, y: 150 }}
-          initialSize={{ width: 450, height: 350 }}
-          onClose={() => closeWindow("theme")}
-          onFocus={() => focusWindow("theme")}
-          focused={focusedWindow === "theme"}
-          state={windowStates["theme"]}
-          onStateChange={(state) => updateWindowState("theme", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.theme.inputs}
-          outputs={windowPorts.theme.outputs}
-        >
-          {renderThemeContent()}
-        </Window>
-      )}
+            {/* Theme Window */}
+            {openWindows.has("theme") && (
+              <Window
+                id="theme"
+                title="Theme Settings"
+                icon={<ThemeIcon />}
+                initialPosition={{ x: 250, y: 150 }}
+                initialSize={{ width: 450, height: 350 }}
+                onClose={() => closeWindow("theme")}
+                onFocus={() => focusWindow("theme")}
+                focused={focusedWindow === "theme"}
+                state={windowStates["theme"]}
+                onStateChange={(state) => updateWindowState("theme", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.theme.inputs}
+                outputs={windowPorts.theme.outputs}
+              >
+                {renderThemeContent()}
+              </Window>
+            )}
 
-      {/* Workflow Window */}
-      {openWindows.has("workflow") && (
-        <Window
-          id="workflow"
-          title="Workflow Editor"
-          icon={<WorkflowIcon />}
-          initialPosition={{ x: 300, y: 80 }}
-          initialSize={{ width: 760, height: 520 }}
-          onClose={() => closeWindow("workflow")}
-          onFocus={() => focusWindow("workflow")}
-          focused={focusedWindow === "workflow"}
-          state={windowStates["workflow"]}
-          onStateChange={(state) => updateWindowState("workflow", state)}
-          showPorts={nodeViewMode}
-          inputs={windowPorts.workflow.inputs}
-          outputs={windowPorts.workflow.outputs}
-        >
-          {renderWorkflowContent()}
-        </Window>
-      )}
+            {/* Workflow Window */}
+            {openWindows.has("workflow") && (
+              <Window
+                id="workflow"
+                title="Workflow Editor"
+                icon={<WorkflowIcon />}
+                initialPosition={{ x: 300, y: 80 }}
+                initialSize={{ width: 760, height: 520 }}
+                onClose={() => closeWindow("workflow")}
+                onFocus={() => focusWindow("workflow")}
+                focused={focusedWindow === "workflow"}
+                state={windowStates["workflow"]}
+                onStateChange={(state) => updateWindowState("workflow", state)}
+                showPorts={nodeViewMode}
+                inputs={windowPorts.workflow.inputs}
+                outputs={windowPorts.workflow.outputs}
+              >
+                {renderWorkflowContent()}
+              </Window>
+            )}
           </Desktop>
           <CommandPalette
             commands={commandPaletteCommands}

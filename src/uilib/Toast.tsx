@@ -10,7 +10,7 @@ import {
   type PropsWithChildren,
   type ReactNode,
 } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type ToastVariant = "default" | "success" | "warning" | "danger" | "info";
 

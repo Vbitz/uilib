@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type CardProps = {
   title?: string;

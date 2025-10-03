@@ -7,7 +7,7 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 import { Textbox } from "./Textbox";
 
 type Command = {
@@ -201,52 +201,52 @@ export function CommandPalette({
           <span className="text-[0.6rem] uppercase tracking-[0.24em] text-muted">⌘K</span>
         </div>
         <div className="flex flex-col gap-3 px-5 pb-5 pt-16">
-        <Textbox
-          ref={inputRef}
-          value={query}
-          onChange={event => setQuery(event.target.value)}
-          placeholder={searchPlaceholder}
-          startSlot={<span className="text-muted">⌘K</span>}
-        />
-        <div className="max-h-72 overflow-y-auto">
-          {visibleCommands.length === 0 && (
-            <p className="px-3 py-4 text-[0.72rem] uppercase tracking-[0.18em] text-muted">No commands found</p>
-          )}
-          {Array.from(sections.entries()).map(([section, commandsInSection]) => (
-            <div key={section || "default"} className="flex flex-col gap-1">
-              {section && (
-                <p className="px-3 text-[0.6rem] font-semibold uppercase tracking-[0.24em] text-muted">
-                  {section}
-                </p>
-              )}
-              {commandsInSection.map(command => {
-                const globalIndex = visibleCommands.indexOf(command);
-                return (
-                  <CommandRow
-                    key={command.id}
-                    command={command}
-                    active={globalIndex === activeIndex}
-                    query={query}
-                    onSelect={() => {
-                      command.onSelect();
-                      onClose();
-                    }}
-                  />
-                );
-              })}
-            </div>
-          ))}
-        </div>
-        <div className="flex items-center justify-between text-[0.6rem] uppercase tracking-[0.24em] text-muted">
-          <span>Use ↑ ↓ to navigate, Enter to run</span>
-          <button
-            type="button"
-            className="border border-[var(--control-border)] bg-control px-2 py-1 text-[0.6rem] uppercase tracking-[0.24em] text-muted transition hover:border-[var(--accent)] hover:text-[var(--accent-muted-foreground)]"
-            onClick={onClose}
-          >
-            Close
-          </button>
-        </div>
+          <Textbox
+            ref={inputRef}
+            value={query}
+            onChange={event => setQuery(event.target.value)}
+            placeholder={searchPlaceholder}
+            startSlot={<span className="text-muted">⌘K</span>}
+          />
+          <div className="max-h-72 overflow-y-auto">
+            {visibleCommands.length === 0 && (
+              <p className="px-3 py-4 text-[0.72rem] uppercase tracking-[0.18em] text-muted">No commands found</p>
+            )}
+            {Array.from(sections.entries()).map(([section, commandsInSection]) => (
+              <div key={section || "default"} className="flex flex-col gap-1">
+                {section && (
+                  <p className="px-3 text-[0.6rem] font-semibold uppercase tracking-[0.24em] text-muted">
+                    {section}
+                  </p>
+                )}
+                {commandsInSection.map(command => {
+                  const globalIndex = visibleCommands.indexOf(command);
+                  return (
+                    <CommandRow
+                      key={command.id}
+                      command={command}
+                      active={globalIndex === activeIndex}
+                      query={query}
+                      onSelect={() => {
+                        command.onSelect();
+                        onClose();
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-between text-[0.6rem] uppercase tracking-[0.24em] text-muted">
+            <span>Use ↑ ↓ to navigate, Enter to run</span>
+            <button
+              type="button"
+              className="border border-[var(--control-border)] bg-control px-2 py-1 text-[0.6rem] uppercase tracking-[0.24em] text-muted transition hover:border-[var(--accent)] hover:text-[var(--accent-muted-foreground)]"
+              onClick={onClose}
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>

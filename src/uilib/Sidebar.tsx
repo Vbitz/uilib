@@ -1,5 +1,5 @@
 import { isValidElement, useState, type ReactNode } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type SidebarItem = {
   id: string;
@@ -78,7 +78,7 @@ export function Sidebar({
             "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
             item.disabled && "cursor-not-allowed opacity-50",
             isActive && !isGroup &&
-              "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
+            "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
           )}
           aria-current={isActive && !isGroup ? "page" : undefined}
           aria-expanded={isGroup ? isExpanded : undefined}

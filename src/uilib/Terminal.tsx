@@ -3,7 +3,7 @@ import "@xterm/xterm/css/xterm.css";
 import { useEffect, useRef, useState } from "react";
 import { Terminal as XTerm, type ITerminalOptions, type ITheme } from "@xterm/xterm";
 
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type TerminalProps = {
   className?: string;

@@ -1,5 +1,5 @@
 import { useId, useMemo, useState, type ReactNode } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type AccordionEntry = {
   id: string;

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode, type MouseEvent } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type WindowState = "normal" | "maximized" | "minimized";
 
@@ -54,7 +54,7 @@ export function Window({
 }: WindowProps) {
   // Detect if we're on mobile
   const [isMobile, setIsMobile] = useState(false);
-  
+
   const [position, setPosition] = useState(initialPosition);
   const [size, setSize] = useState(initialSize);
   const [isDragging, setIsDragging] = useState(false);
@@ -75,7 +75,7 @@ export function Window({
     const checkMobile = () => {
       const mobile = window.innerWidth < 768 || 'ontouchstart' in window;
       setIsMobile(mobile);
-      
+
       // Auto-maximize on mobile on initial load
       if (mobile && windowState === "normal" && !externalState) {
         setInternalState("maximized");
@@ -83,7 +83,7 @@ export function Window({
         setSize({ width: window.innerWidth, height: window.innerHeight });
       }
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -102,7 +102,7 @@ export function Window({
         Math.max(0, initialPosition.y),
         Math.max(0, window.innerHeight - initialSize.height)
       );
-      
+
       // Only update if position needs adjustment
       if (constrainedX !== initialPosition.x || constrainedY !== initialPosition.y) {
         setPosition({ x: constrainedX, y: constrainedY });
@@ -114,10 +114,10 @@ export function Window({
 
   const handleMouseDown = useCallback((e: MouseEvent<HTMLDivElement>) => {
     if (e.button !== 0) return; // Only left click
-    
+
     e.stopPropagation();
     onFocus?.();
-    
+
     setIsDragging(true);
     dragRef.current = {
       startX: e.clientX,
@@ -131,7 +131,7 @@ export function Window({
     if (e.button !== 0) return;
     e.stopPropagation();
     onFocus?.();
-    
+
     setIsResizing(true);
     setResizeDirection(direction);
     resizeRef.current = {
@@ -308,7 +308,7 @@ export function Window({
       >
         {icon && <div className="flex h-4 w-4 items-center justify-center">{icon}</div>}
         <span className="flex-1 font-semibold">{title}</span>
-        
+
         {/* Window controls */}
         <div className="flex gap-1">
           <button
@@ -377,7 +377,7 @@ export function Window({
               />
             </div>
           ))}
-          
+
           {/* Output ports on the right */}
           {outputs.map((output, index) => (
             <div

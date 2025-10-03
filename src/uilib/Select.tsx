@@ -1,5 +1,5 @@
 import { forwardRef, type ReactNode, type SelectHTMLAttributes } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type SelectProps = {
   label?: string;

@@ -6,7 +6,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type TreeItem = {
   id: string;

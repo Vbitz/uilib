@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type TaskbarItem = {
   id: string;
@@ -76,7 +76,7 @@ export function Taskbar({
           No windows open
         </span>
       )}
-      
+
       {/* Spacer */}
       <div className="flex-1" />
 
@@ -101,7 +101,7 @@ export function Taskbar({
           <span className="font-semibold">Command Palette</span>
         </button>
       )}
-      
+
       {/* Node View Toggle */}
       {onNodeViewToggle && (
         <button

@@ -1,5 +1,5 @@
 import { useState, useCallback, type ReactNode, type MouseEvent } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type DesktopIcon = {
   id: string;
@@ -27,11 +27,11 @@ type DesktopProps = {
   onConnectionsChange?: (connections: DesktopConnection[]) => void;
 };
 
-export function Desktop({ 
-  icons, 
-  children, 
-  className, 
-  taskbar, 
+export function Desktop({
+  icons,
+  children,
+  className,
+  taskbar,
   statusbar,
   showConnections = false,
   connections = [],
@@ -116,7 +116,7 @@ export function Desktop({
 
       {/* Connection lines SVG overlay */}
       {showConnections && (
-        <svg 
+        <svg
           className="pointer-events-none absolute inset-0 z-20"
           style={{
             top: taskbar ? "42px" : undefined,
@@ -136,7 +136,7 @@ export function Desktop({
               strokeDasharray="4 2"
             />
           ))}
-          
+
           {/* Draw connection being created */}
           {drawingConnection && (
             <line

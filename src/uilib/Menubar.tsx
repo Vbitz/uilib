@@ -7,7 +7,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
 } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type MenuSeparator = {
   id: string;
@@ -122,7 +122,7 @@ function MenuPanel({ items, onClose, style, level = 0 }: MenuPanelProps) {
                   "flex w-full items-center justify-between gap-3 px-3 py-2 text-left",
                   "transition duration-150 ease-out focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
                   !disabled &&
-                    "hover:bg-control-hover hover:text-[var(--accent-muted-foreground)]",
+                  "hover:bg-control-hover hover:text-[var(--accent-muted-foreground)]",
                   disabled && "cursor-not-allowed text-muted opacity-60"
                 )}
                 disabled={disabled}
@@ -256,7 +256,7 @@ export function Menubar({ items, className }: MenubarProps) {
               className={cn(
                 triggerClass,
                 openId === item.id &&
-                  "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
+                "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
               )}
               aria-haspopup="menu"
               aria-expanded={openId === item.id}

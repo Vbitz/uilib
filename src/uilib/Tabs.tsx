@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type TabItem = {
   id: string;

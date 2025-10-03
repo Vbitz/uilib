@@ -63,7 +63,7 @@ All components follow these patterns:
 
 3. **Use the `cn()` utility for className composition**:
    ```tsx
-   import { cn } from "../utils/cn";
+   import { cn } from "./utils/cn";
    
    className={cn("base-classes", conditionalClasses, className)}
    ```

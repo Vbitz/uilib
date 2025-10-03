@@ -7,7 +7,7 @@ import {
   type CSSProperties,
   type PropsWithChildren,
 } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type ThemeMode = "light" | "dark";
 
@@ -118,15 +118,14 @@ function getContrastingText(hex: string): string {
 }
 
 type AccentPalette = Record<
-  `--${
-    | "accent"
-    | "accent-hover"
-    | "accent-active"
-    | "accent-muted"
-    | "accent-muted-foreground"
-    | "accent-surface"
-    | "accent-surface-foreground"
-    | "accent-contrast"
+  `--${| "accent"
+  | "accent-hover"
+  | "accent-active"
+  | "accent-muted"
+  | "accent-muted-foreground"
+  | "accent-surface"
+  | "accent-surface-foreground"
+  | "accent-contrast"
   }`,
   string
 >;

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "./utils/cn";
 
 type StatusBarItemVariant = "default" | "info" | "success" | "warning" | "danger";
 
