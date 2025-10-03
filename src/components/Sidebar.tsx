@@ -131,7 +131,10 @@ export function Sidebar({
   let headerText: string | undefined;
   if (typeof header === "string") {
     headerText = header;
-  } else if (isValidElement(header) && typeof header.props.children === "string") {
+  } else if (
+    isValidElement<{ children?: ReactNode }>(header) &&
+    typeof header.props.children === "string"
+  ) {
     headerText = header.props.children;
   }
 

@@ -8,7 +8,7 @@ type DesktopIcon = {
   onOpen: () => void;
 };
 
-type WindowConnection = {
+type DesktopConnection = {
   id: string;
   sourceWindowId: string;
   targetWindowId: string;
@@ -22,8 +22,8 @@ type DesktopProps = {
   className?: string;
   taskbar?: ReactNode;
   showConnections?: boolean;
-  connections?: WindowConnection[];
-  onConnectionsChange?: (connections: WindowConnection[]) => void;
+  connections?: DesktopConnection[];
+  onConnectionsChange?: (connections: DesktopConnection[]) => void;
 };
 
 export function Desktop({ 
@@ -78,7 +78,7 @@ export function Desktop({
       {/* Desktop icons grid */}
       <div className={cn(
         "grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-4 p-4 content-start",
-        taskbar && "pt-16"
+        taskbar ? "pt-16" : undefined
       )}>
         {icons.map((icon) => (
           <button
@@ -105,7 +105,7 @@ export function Desktop({
       {/* Windows layer */}
       <div className={cn(
         "pointer-events-none absolute inset-0 z-10",
-        taskbar && "top-[42px]"
+        taskbar ? "top-[42px]" : undefined
       )}>
         {children}
       </div>
@@ -114,7 +114,7 @@ export function Desktop({
       {showConnections && (
         <svg 
           className="pointer-events-none absolute inset-0 z-20"
-          style={{ top: taskbar ? "42px" : 0 }}
+          style={{ top: taskbar ? "42px" : undefined }}
         >
           {/* Draw existing connections */}
           {connections.map(conn => (
@@ -149,4 +149,4 @@ export function Desktop({
   );
 }
 
-export type { DesktopIcon, DesktopProps, WindowConnection };
+export type { DesktopIcon, DesktopProps, DesktopConnection };

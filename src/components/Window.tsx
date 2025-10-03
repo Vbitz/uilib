@@ -231,6 +231,44 @@ export function Window({
     }
   }, [isDragging, isResizing, handleMouseMove, handleMouseUp]);
 
+  useEffect(() => {
+    if (!isResizing || typeof document === "undefined") {
+      return;
+    }
+
+    const bodyStyle = document.body.style;
+    const previousUserSelect = bodyStyle.getPropertyValue("user-select");
+    const previousWebkitUserSelect = bodyStyle.getPropertyValue("-webkit-user-select");
+    const previousMsUserSelect = bodyStyle.getPropertyValue("-ms-user-select");
+
+    bodyStyle.setProperty("user-select", "none");
+    bodyStyle.setProperty("-webkit-user-select", "none");
+    bodyStyle.setProperty("-ms-user-select", "none");
+    if (typeof window !== "undefined") {
+      window.getSelection()?.removeAllRanges();
+    }
+
+    return () => {
+      if (previousUserSelect) {
+        bodyStyle.setProperty("user-select", previousUserSelect);
+      } else {
+        bodyStyle.removeProperty("user-select");
+      }
+
+      if (previousWebkitUserSelect) {
+        bodyStyle.setProperty("-webkit-user-select", previousWebkitUserSelect);
+      } else {
+        bodyStyle.removeProperty("-webkit-user-select");
+      }
+
+      if (previousMsUserSelect) {
+        bodyStyle.setProperty("-ms-user-select", previousMsUserSelect);
+      } else {
+        bodyStyle.removeProperty("-ms-user-select");
+      }
+    };
+  }, [isResizing]);
+
   // Handle window resize for maximized windows
   useEffect(() => {
     if (windowState === "maximized") {

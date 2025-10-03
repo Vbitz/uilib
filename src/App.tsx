@@ -29,6 +29,7 @@ import {
   useTheme,
   Window,
   type DesktopIcon,
+  type DesktopConnection,
   type EditorNode,
   type NodePaletteItem,
   type TableColumn,
@@ -331,7 +332,7 @@ function Workspace() {
   const [focusedWindow, setFocusedWindow] = useState<string | null>(null);
   const [windowStates, setWindowStates] = useState<Record<string, WindowState>>({});
   const [nodeViewMode, setNodeViewMode] = useState(false);
-  const [connections, setConnections] = useState<any[]>([]);
+  const [connections, setConnections] = useState<DesktopConnection[]>([]);
   const [nodeEditorNodes, setNodeEditorNodes] = useState<EditorNode[]>(() => initialNodeEditorNodes);
   const [listboxSelection, setListboxSelection] = useState<string | null>("pipeline-review");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -968,7 +969,7 @@ function Workspace() {
   );
 
   // Define window ports for node view
-  const windowPorts: Record<string, { inputs: string[]; outputs: string[] }> = {
+  const windowPorts = {
     buttons: { inputs: [], outputs: ["click"] },
     forms: { inputs: ["data"], outputs: ["submit"] },
     tables: { inputs: ["data"], outputs: ["select"] },
@@ -1138,7 +1139,7 @@ function Workspace() {
                 items={[
                   { id: "1", label: "Projects" },
                   { id: "2", label: "Nebula UI" },
-                  { id: "3", label: "Components", active: true },
+                  { id: "3", label: "Components" },
                 ]}
               />
             </div>
