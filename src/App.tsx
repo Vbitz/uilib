@@ -32,6 +32,7 @@ import {
   Window,
   type DesktopIcon,
   type DesktopConnection,
+  type EditorEdge,
   type EditorNode,
   type NodePaletteItem,
   type StatusBarItem,
@@ -143,6 +144,21 @@ const initialNodeEditorNodes: EditorNode[] = [
     width: 240,
     height: 148,
     metadata: { channel: "#deployments" },
+  },
+];
+
+const initialNodeEditorEdges: EditorEdge[] = [
+  {
+    id: "edge-start-tests",
+    source: "node-start",
+    target: "node-run-tests",
+    label: "Triggers",
+  },
+  {
+    id: "edge-tests-notify",
+    source: "node-run-tests",
+    target: "node-notify",
+    label: "On success",
   },
 ];
 
@@ -337,6 +353,7 @@ function Workspace() {
   const [nodeViewMode, setNodeViewMode] = useState(false);
   const [connections, setConnections] = useState<DesktopConnection[]>([]);
   const [nodeEditorNodes, setNodeEditorNodes] = useState<EditorNode[]>(() => initialNodeEditorNodes);
+  const [nodeEditorEdges, setNodeEditorEdges] = useState<EditorEdge[]>(() => initialNodeEditorEdges);
   const [listboxSelection, setListboxSelection] = useState<string | null>("pipeline-review");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarSelection, setSidebarSelection] = useState<string | null>("overview");
@@ -1730,8 +1747,10 @@ function Workspace() {
             </div>
             <NodeEditor
               nodes={nodeEditorNodes}
+              edges={nodeEditorEdges}
               palette={nodePalette}
               onNodesChange={setNodeEditorNodes}
+              onEdgesChange={setNodeEditorEdges}
               gridSize={24}
               snapToGrid={false}
               className="flex-1 min-h-[360px]"
