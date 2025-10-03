@@ -197,6 +197,31 @@
     background: linear-gradient(180deg, transparent 0%, var(--toolbar-border) 50%, transparent 100%);
     width: 1px;
   }
+
+  .ui-select-element {
+    color: inherit;
+    background-color: transparent;
+    background-image: none;
+  }
+
+  .ui-select-element option,
+  .ui-select-element optgroup {
+    color: var(--desktop-foreground);
+    background-color: var(--control-bg);
+  }
+
+  .ui-select-element option:checked,
+  .ui-select-element option:hover {
+    background-color: var(--control-bg-hover);
+  }
+
+  :root[data-theme="dark"] .ui-select-element option,
+  [data-theme="dark"] .ui-select-element option,
+  :root[data-theme="dark"] .ui-select-element optgroup,
+  [data-theme="dark"] .ui-select-element optgroup {
+    color: var(--desktop-foreground);
+    background-color: var(--control-bg);
+  }
 }
 
 @layer utilities {

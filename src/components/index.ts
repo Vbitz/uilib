@@ -15,6 +15,7 @@ export * from "./Table";
 export * from "./Taskbar";
 export * from "./StatusBar";
 export * from "./Textbox";
+export * from "./Select";
 export * from "./Tabs";
 export * from "./Toolbar";
 export * from "./ThemeProvider";

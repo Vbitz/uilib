@@ -20,6 +20,7 @@ import {
   Tabs,
   Taskbar,
   StatusBar,
+  Select,
   Textbox,
   ThemeProvider,
   ToastProvider,
@@ -339,6 +340,9 @@ function Workspace() {
   const [listboxSelection, setListboxSelection] = useState<string | null>("pipeline-review");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarSelection, setSidebarSelection] = useState<string | null>("overview");
+  const [repositoryVisibility, setRepositoryVisibility] = useState<"public" | "internal" | "private">(
+    "internal"
+  );
   const [menubarMessage, setMenubarMessage] = useState("Choose a command");
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [lastCommand, setLastCommand] = useState<string | null>(null);
@@ -1144,6 +1148,26 @@ function Workspace() {
                 onChange={() => {}}
                 endSlot={<Button size="sm">Reveal</Button>}
               />
+              <Select
+                label="Visibility"
+                description="Controls who can see this repository."
+                value={repositoryVisibility}
+                onChange={event =>
+                  setRepositoryVisibility(event.target.value as "public" | "internal" | "private")
+                }
+              >
+                <option value="public">Public</option>
+                <option value="internal">Internal</option>
+                <option value="private">Private</option>
+              </Select>
+              <Select label="Region" defaultValue="us-east" disabled>
+                <option value="us-east">US East</option>
+                <option value="us-west">US West</option>
+                <option value="eu-central">EU Central</option>
+              </Select>
+            </div>
+            <div className="rounded border border-dashed border-[var(--toolbar-border)] px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
+              Selected visibility: {repositoryVisibility.charAt(0).toUpperCase() + repositoryVisibility.slice(1)}
             </div>
           </div>
         </Window>
