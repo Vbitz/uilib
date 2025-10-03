@@ -215,7 +215,7 @@ export function TreeView({
       role="tree"
       aria-multiselectable={false}
       className={cn(
-        "flex w-full flex-col overflow-hidden border border-[var(--control-border)] bg-[var(--window-bg)] text-[0.74rem] shadow-[0_10px_26px_rgba(9,18,27,0.28)]",
+        "flex w-full min-h-0 flex-col overflow-x-hidden overflow-y-auto border border-[var(--control-border)] bg-[var(--window-bg)] text-[0.74rem] shadow-[0_10px_26px_rgba(9,18,27,0.28)]",
         className
       )}
     >

@@ -182,6 +182,8 @@ const tableColumns: TableColumn<Task>[] = [
   { key: "due", header: "Due", align: "right" },
 ];
 
+const WORKSPACE_NAME = "Nebula UI Library";
+
 // Desktop icon components
 const ButtonsIcon = () => (
   <svg viewBox="0 0 64 64" fill="none" className="h-full w-full">
@@ -297,6 +299,17 @@ const NavbarIcon = () => (
     <rect x="18" y="30" width="12" height="4" rx="1" fill="currentColor" opacity="0.7" />
     <rect x="32" y="30" width="12" height="4" rx="1" fill="currentColor" opacity="0.5" />
     <rect x="18" y="38" width="24" height="4" rx="1" fill="currentColor" opacity="0.3" />
+  </svg>
+);
+
+const NebulaLogo = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="h-full w-full">
+    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.6" opacity="0.4" />
+    <path
+      d="M12 4.8l1.9 3.94 4.36.46-3.31 2.92.97 4.11L12 13.8 8.08 16.23l.97-4.11-3.31-2.92 4.36-.46L12 4.8z"
+      fill="currentColor"
+      opacity="0.85"
+    />
   </svg>
 );
 
@@ -535,6 +548,11 @@ function Workspace() {
 
   const focusedWindowLabel = focusedWindow ? windowLabelMap[focusedWindow] ?? focusedWindow : "Desktop";
   const openWindowCount = openWindows.size;
+  const commandPaletteVisible = commandPaletteOpen && openWindows.has("palette");
+
+  const openCommandPalette = useCallback(() => {
+    setCommandPaletteOpen(true);
+  }, [setCommandPaletteOpen]);
 
   const statusBarItems = useMemo<StatusBarItem[]>(() => {
     const accentSwatch = (
@@ -549,7 +567,7 @@ function Workspace() {
       {
         id: "workspace",
         label: "Workspace",
-        value: "Nebula UI Library",
+        value: WORKSPACE_NAME,
       },
       {
         id: "focus",
@@ -1083,6 +1101,10 @@ function Workspace() {
             items={taskbarItems}
             nodeViewMode={nodeViewMode}
             onNodeViewToggle={() => setNodeViewMode(!nodeViewMode)}
+            onCommandPaletteOpen={openCommandPalette}
+            commandPaletteActive={commandPaletteVisible}
+            brandName={WORKSPACE_NAME}
+            brandLogo={<NebulaLogo />}
           />
         )}
         statusbar={<StatusBar items={statusBarItems} />}
@@ -1762,7 +1784,7 @@ function Workspace() {
       </Desktop>
       <CommandPalette
         commands={commandPaletteCommands}
-        open={commandPaletteOpen && openWindows.has("palette")}
+        open={commandPaletteVisible}
         onClose={() => setCommandPaletteOpen(false)}
       />
       <Modal

@@ -15,9 +15,22 @@ type TaskbarProps = {
   className?: string;
   nodeViewMode?: boolean;
   onNodeViewToggle?: () => void;
+  onCommandPaletteOpen?: () => void;
+  commandPaletteActive?: boolean;
+  brandName?: string;
+  brandLogo?: ReactNode;
 };
 
-export function Taskbar({ items, className, nodeViewMode = false, onNodeViewToggle }: TaskbarProps) {
+export function Taskbar({
+  items,
+  className,
+  nodeViewMode = false,
+  onNodeViewToggle,
+  onCommandPaletteOpen,
+  commandPaletteActive = false,
+  brandName,
+  brandLogo,
+}: TaskbarProps) {
   return (
     <div
       className={cn(
@@ -25,6 +38,20 @@ export function Taskbar({ items, className, nodeViewMode = false, onNodeViewTogg
         className
       )}
     >
+      {(brandName || brandLogo) && (
+        <div
+          className="flex shrink-0 items-center gap-2 rounded border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.18em] text-muted"
+          aria-label={brandName}
+        >
+          {brandLogo && (
+            <span className="inline-flex h-4 w-4 items-center justify-center text-[var(--accent)]" aria-hidden="true">
+              {brandLogo}
+            </span>
+          )}
+          {brandName && <span className="font-semibold text-[var(--desktop-foreground)]">{brandName}</span>}
+        </div>
+      )}
+
       {items.map((item) => (
         <button
           key={item.id}
@@ -52,6 +79,28 @@ export function Taskbar({ items, className, nodeViewMode = false, onNodeViewTogg
       
       {/* Spacer */}
       <div className="flex-1" />
+
+      {/* Command Palette */}
+      {onCommandPaletteOpen && (
+        <button
+          type="button"
+          onClick={onCommandPaletteOpen}
+          className={cn(
+            "flex items-center gap-2 border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-1.5 text-[0.7rem] uppercase tracking-[0.16em] transition",
+            "hover:bg-[var(--control-bg-hover)]",
+            commandPaletteActive && "border-[var(--accent)] bg-[var(--accent)] text-[var(--window-bg)]"
+          )}
+          title="Open Command Palette"
+        >
+          <svg viewBox="0 0 16 16" fill="none" className="h-3 w-3" stroke="currentColor" strokeWidth="1.4">
+            <circle cx="4" cy="4" r="2.2" />
+            <circle cx="12" cy="4" r="2.2" />
+            <circle cx="4" cy="12" r="2.2" />
+            <path d="M12 9.5a2.5 2.5 0 1 1-2.5 2.5" />
+          </svg>
+          <span className="font-semibold">Command Palette</span>
+        </button>
+      )}
       
       {/* Node View Toggle */}
       {onNodeViewToggle && (
