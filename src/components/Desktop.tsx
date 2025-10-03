@@ -21,6 +21,7 @@ type DesktopProps = {
   children?: ReactNode;
   className?: string;
   taskbar?: ReactNode;
+  statusbar?: ReactNode;
   showConnections?: boolean;
   connections?: DesktopConnection[];
   onConnectionsChange?: (connections: DesktopConnection[]) => void;
@@ -31,6 +32,7 @@ export function Desktop({
   children, 
   className, 
   taskbar, 
+  statusbar,
   showConnections = false,
   connections = [],
   onConnectionsChange,
@@ -78,7 +80,8 @@ export function Desktop({
       {/* Desktop icons grid */}
       <div className={cn(
         "grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-4 p-4 content-start",
-        taskbar ? "pt-16" : undefined
+        taskbar ? "pt-16" : undefined,
+        statusbar ? "pb-16" : undefined
       )}>
         {icons.map((icon) => (
           <button
@@ -105,7 +108,8 @@ export function Desktop({
       {/* Windows layer */}
       <div className={cn(
         "pointer-events-none absolute inset-0 z-10",
-        taskbar ? "top-[42px]" : undefined
+        taskbar ? "top-[42px]" : undefined,
+        statusbar ? "bottom-[42px]" : undefined
       )}>
         {children}
       </div>
@@ -114,7 +118,10 @@ export function Desktop({
       {showConnections && (
         <svg 
           className="pointer-events-none absolute inset-0 z-20"
-          style={{ top: taskbar ? "42px" : undefined }}
+          style={{
+            top: taskbar ? "42px" : undefined,
+            bottom: statusbar ? "42px" : undefined,
+          }}
         >
           {/* Draw existing connections */}
           {connections.map(conn => (
@@ -145,6 +152,9 @@ export function Desktop({
           )}
         </svg>
       )}
+
+      {/* Status bar */}
+      {statusbar}
     </div>
   );
 }

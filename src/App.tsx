@@ -19,6 +19,7 @@ import {
   Table,
   Tabs,
   Taskbar,
+  StatusBar,
   Textbox,
   ThemeProvider,
   ToastProvider,
@@ -32,6 +33,7 @@ import {
   type DesktopConnection,
   type EditorNode,
   type NodePaletteItem,
+  type StatusBarItem,
   type TableColumn,
   type WindowState,
 } from "./components";
@@ -324,7 +326,7 @@ const TreeIcon = () => (
 );
 
 function Workspace() {
-  const { mode, toggleMode, setAccent } = useTheme();
+  const { mode, accent, toggleMode, setAccent } = useTheme();
   const { notify } = useToast();
   
   // Window management state
@@ -488,6 +490,13 @@ function Workspace() {
     },
   ], [openWindow]);
 
+  const windowLabelMap = useMemo(() => {
+    return desktopIcons.reduce<Record<string, string>>((map, icon) => {
+      map[icon.id] = icon.label;
+      return map;
+    }, {});
+  }, [desktopIcons]);
+
   // Generate taskbar items from open windows
   const taskbarItems = useMemo(() => {
     return Array.from(openWindows).map(windowId => {
@@ -502,6 +511,61 @@ function Workspace() {
       };
     });
   }, [openWindows, desktopIcons, windowStates, focusedWindow, focusWindow]);
+
+  const focusedWindowLabel = focusedWindow ? windowLabelMap[focusedWindow] ?? focusedWindow : "Desktop";
+  const openWindowCount = openWindows.size;
+
+  const statusBarItems = useMemo<StatusBarItem[]>(() => {
+    const accentSwatch = (
+      <span
+        className="inline-flex h-2.5 w-2.5 rounded-sm border border-[var(--control-border)]"
+        style={{ backgroundColor: accent }}
+        aria-hidden="true"
+      />
+    );
+
+    return [
+      {
+        id: "workspace",
+        label: "Workspace",
+        value: "Nebula UI Library",
+      },
+      {
+        id: "focus",
+        label: "Focus",
+        value: focusedWindowLabel,
+        hint: openWindowCount === 0 ? "No windows open" : `${openWindowCount} open`,
+        variant: focusedWindow ? "info" : "default",
+      },
+      {
+        id: "node-mode",
+        label: "Node View",
+        value: nodeViewMode ? "Active" : "Off",
+        variant: nodeViewMode ? "success" : "default",
+        pulse: nodeViewMode,
+      },
+      {
+        id: "connections",
+        label: "Connections",
+        value: connections.length.toString(),
+        variant: connections.length ? "info" : "default",
+        align: "end",
+      },
+      {
+        id: "theme",
+        label: "Theme",
+        value: mode === "dark" ? "Dark" : "Light",
+        align: "end",
+      },
+      {
+        id: "accent",
+        label: "Accent",
+        value: accent.toUpperCase(),
+        icon: accentSwatch,
+        align: "end",
+      },
+    ];
+  }, [accent, connections.length, focusedWindow, focusedWindowLabel, mode, nodeViewMode, openWindowCount]);
 
   const accordionItems = useMemo(
     () => [
@@ -1000,6 +1064,7 @@ function Workspace() {
             onNodeViewToggle={() => setNodeViewMode(!nodeViewMode)}
           />
         )}
+        statusbar={<StatusBar items={statusBarItems} />}
         showConnections={nodeViewMode}
         connections={connections}
         onConnectionsChange={setConnections}

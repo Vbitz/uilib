@@ -13,6 +13,7 @@ export * from "./Pagination";
 export * from "./Sidebar";
 export * from "./Table";
 export * from "./Taskbar";
+export * from "./StatusBar";
 export * from "./Textbox";
 export * from "./Tabs";
 export * from "./Toolbar";
