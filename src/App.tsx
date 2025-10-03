@@ -1,6 +1,6 @@
 import "./index.css";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Accordion,
   Button,
@@ -40,12 +40,21 @@ import {
   type TableColumn,
   type WindowState,
 } from "./components";
+import { cn } from "./utils/cn";
 
 type Task = {
   name: string;
   status: "Backlog" | "In Progress" | "Review" | "Done";
   assignee: string;
   due: string;
+};
+
+type ComponentLibraryItem = {
+  id: string;
+  label: string;
+  description: string;
+  icon: ReactNode;
+  render: () => ReactNode;
 };
 
 const tasks: Task[] = [
@@ -248,6 +257,97 @@ const WorkflowIcon = () => (
   </svg>
 );
 
+type ComponentLibraryPageProps = {
+  items: ComponentLibraryItem[];
+  activeId: string | null;
+  onSelect: (id: string) => void;
+};
+
+function ComponentLibraryPage({ items, activeId, onSelect }: ComponentLibraryPageProps) {
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const handleSelect = useCallback(
+    (id: string) => {
+      onSelect(id);
+      const target = sectionRefs.current[id];
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    },
+    [onSelect]
+  );
+
+  const sidebarSections = useMemo(
+    () => [
+      {
+        id: "component-index",
+        label: "Components",
+        items: items.map(item => ({
+          id: item.id,
+          label: item.label,
+          description: item.description,
+          icon: (
+            <span className="text-[0.62rem] font-semibold">
+              {item.label.slice(0, 2).toUpperCase()}
+            </span>
+          ),
+        })),
+      },
+    ],
+    [items]
+  );
+
+  return (
+    <div className="flex min-h-screen bg-[var(--desktop-bg)] text-[var(--desktop-foreground)]">
+      <aside className="sticky top-0 h-screen w-[300px] shrink-0 border-r border-[var(--toolbar-border)] bg-[var(--window-bg)]/70 px-4 py-6">
+        <Sidebar
+          sections={sidebarSections}
+          selectedId={activeId ?? undefined}
+          onSelect={handleSelect}
+          header="Component Index"
+          className="h-full"
+        />
+      </aside>
+      <main className="flex-1 space-y-10 overflow-y-auto px-6 py-10">
+        {items.map(item => {
+          const isActive = activeId === item.id;
+          return (
+            <section
+              key={item.id}
+              ref={(node: HTMLDivElement | null) => {
+                sectionRefs.current[item.id] = node;
+              }}
+              className="space-y-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center text-[var(--desktop-foreground)]">
+                  {item.icon}
+                </div>
+                <div>
+                  <h2 className="text-[0.78rem] font-semibold uppercase tracking-[0.24em] text-subtle">
+                    {item.label}
+                  </h2>
+                  <p className="text-[0.66rem] uppercase tracking-[0.18em] text-muted">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+              <div
+                className={cn(
+                  "rounded border border-[var(--control-border)] bg-[var(--window-bg)] p-5 text-[0.78rem] text-subtle shadow-[0_6px_18px_rgba(9,18,27,0.24)]",
+                  isActive && "border-[var(--accent)]"
+                )}
+              >
+                {item.render()}
+              </div>
+            </section>
+          );
+        })}
+      </main>
+    </div>
+  );
+}
+
 const TerminalIcon = () => (
   <svg viewBox="0 0 64 64" fill="none" className="h-full w-full">
     <rect x="10" y="16" width="44" height="32" rx="3" stroke="currentColor" strokeWidth="2" />
@@ -406,6 +506,8 @@ function Workspace() {
   const [treeExpanded, setTreeExpanded] = useState<string[]>(["folder-foundations", "folder-components"]);
   const [activeRibbonTab, setActiveRibbonTab] = useState<string>("layout");
   const [terminalBuffer, setTerminalBuffer] = useState<string[]>(() => [...INITIAL_TERMINAL_LINES]);
+  const [activeSurface, setActiveSurface] = useState<"desktop" | "library">("desktop");
+  const [libraryActiveId, setLibraryActiveId] = useState<string>("buttons");
 
   const terminalOptions = useMemo(() => ({ disableStdin: true }), []);
 
@@ -432,6 +534,535 @@ function Workspace() {
       return next;
     });
   }, []);
+
+  const renderButtonsContent = () => (
+    <div className="space-y-4">
+      <div>
+        <h3 className="mb-2 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
+          Button Variants
+        </h3>
+        <p className="mb-4 text-[0.72rem] text-muted">
+          Variants for primary workflows and alerts.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Button>Primary</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="warning">Warning</Button>
+          <Button variant="error">Error</Button>
+          <Button disabled>Disabled</Button>
+        </div>
+      </div>
+      <div>
+        <h3 className="mb-2 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
+          Button Sizes
+        </h3>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button size="sm">Small</Button>
+          <Button>Default</Button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderFormsContent = () => (
+    <div className="space-y-4">
+      <p className="text-[0.72rem] text-muted">Designed to match editor chrome.</p>
+      <div className="space-y-3">
+        <Textbox label="Repository" value="astra/nebula" onChange={() => {}} />
+        <Textbox label="Owner" value="Casey Simmons" disabled onChange={() => {}} />
+        <Textbox
+          label="API Key"
+          type="password"
+          value="••••••••••••"
+          onChange={() => {}}
+          endSlot={<Button size="sm">Reveal</Button>}
+        />
+        <Select
+          label="Visibility"
+          description="Controls who can see this repository."
+          value={repositoryVisibility}
+          onChange={event =>
+            setRepositoryVisibility(event.target.value as "public" | "internal" | "private")
+          }
+        >
+          <option value="public">Public</option>
+          <option value="internal">Internal</option>
+          <option value="private">Private</option>
+        </Select>
+        <Select label="Region" defaultValue="us-east" disabled>
+          <option value="us-east">US East</option>
+          <option value="us-west">US West</option>
+          <option value="eu-central">EU Central</option>
+        </Select>
+      </div>
+      <div className="rounded border border-dashed border-[var(--toolbar-border)] px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
+        Selected visibility: {repositoryVisibility.charAt(0).toUpperCase() + repositoryVisibility.slice(1)}
+      </div>
+    </div>
+  );
+
+  const renderTablesContent = () => (
+    <div className="space-y-3">
+      <p className="text-[0.72rem] text-muted">Track delivery readiness across your engineering org.</p>
+      <Table<Task>
+        columns={tableColumns}
+        data={tasks}
+        striped
+        density="comfortable"
+      />
+    </div>
+  );
+
+  const renderNavigationContent = () => (
+    <div className="space-y-6">
+      <div>
+        <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
+          Breadcrumb
+        </h3>
+        <Breadcrumb
+          items={[
+            { id: "1", label: "Projects" },
+            { id: "2", label: "Nebula UI" },
+            { id: "3", label: "Components" },
+          ]}
+        />
+      </div>
+      <div>
+        <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
+          Pagination
+        </h3>
+        <Pagination page={2} pageCount={12} onPageChange={() => {}} siblings={1} />
+      </div>
+      <div>
+        <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
+          Tabs
+        </h3>
+        <Tabs
+          items={[
+            {
+              id: "overview",
+              label: "Overview",
+              description: "Main view",
+              content: <p className="text-[0.72rem] text-muted">Overview content goes here.</p>,
+            },
+            {
+              id: "details",
+              label: "Details",
+              description: "Detailed view",
+              content: <p className="text-[0.72rem] text-muted">Details content goes here.</p>,
+            },
+          ]}
+        />
+      </div>
+    </div>
+  );
+
+  const renderAccordionContent = () => (
+    <div className="space-y-4">
+      <p className="text-[0.72rem] text-muted">
+        Use accordions to group dense configuration details for reviewers.
+      </p>
+      <Accordion items={accordionItems} />
+    </div>
+  );
+
+  const renderCardsContent = () => (
+    <div className="space-y-4">
+      <p className="text-[0.72rem] text-muted">
+        The card component packages chrome, expandable sections, and footers.
+      </p>
+      <Card
+        title="Integration Checklist"
+        description="Validate each step before shipping to production"
+        footer="Last updated 2 minutes ago by Casey"
+      >
+        <Card.Section title="Authentication" description="OAuth client" actions={<span>3 steps</span>}>
+          <ul className="list-inside list-disc space-y-1 text-[0.72rem]">
+            <li>Exchange staging credentials</li>
+            <li>Record redirect URIs</li>
+            <li>Capture consent screenshots</li>
+          </ul>
+        </Card.Section>
+        <Card.Section title="Observability" description="Ensure instrumentation" defaultOpen={false}>
+          <div className="space-y-2 text-[0.72rem]">
+            <p className="text-muted">Enable tracing for error and latency signals.</p>
+            <Button size="sm">Configure exporters</Button>
+          </div>
+        </Card.Section>
+      </Card>
+    </div>
+  );
+
+  const renderCommandPaletteContent = () => (
+    <div className="space-y-4">
+      <p className="text-[0.72rem] text-muted">
+        Surface workspace actions with fuzzy search and keyboard shortcuts.
+      </p>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button onClick={() => setCommandPaletteOpen(true)}>Open Palette</Button>
+        <Button variant="secondary" size="sm" onClick={() => setCommandPaletteOpen(true)}>
+          Simulate Cmd+K
+        </Button>
+        <Button size="sm" onClick={() => setLastCommand(null)}>
+          Clear last command
+        </Button>
+      </div>
+      <div className="rounded border border-[var(--control-border)] bg-control px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
+        Last command: {lastCommand ?? "None yet"}
+      </div>
+    </div>
+  );
+
+  const renderListboxContent = () => (
+    <div className="flex flex-col gap-4">
+      <p className="text-[0.72rem] text-muted">
+        The listbox supports mouse, keyboard, and disabled options.
+      </p>
+      <Listbox options={listboxOptions} value={listboxSelection} onChange={setListboxSelection} className="flex-1" />
+      <div className="rounded border border-dashed border-[var(--toolbar-border)] px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
+        Selected: {listboxSelection ?? "None"}
+      </div>
+    </div>
+  );
+
+  const renderMenubarContent = () => (
+    <div className="space-y-4">
+      <Menubar items={menubarItems} />
+      <div className="rounded border border-[var(--control-border)] bg-control px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
+        {menubarMessage}
+      </div>
+      <p className="text-[0.68rem] text-muted">
+        Use nested menus, separators, and destructive actions to model product chrome.
+      </p>
+    </div>
+  );
+
+  const renderNavbarContent = () => (
+    <div className="space-y-4">
+      <Navbar
+        brand={<span className="text-[0.72rem] uppercase tracking-[0.24em]">Nebula Studio</span>}
+        links={navbarLinks}
+        actions={<Button size="sm">Invite</Button>}
+      >
+        <span className="rounded border border-[var(--control-border)] bg-control px-2 py-1 text-[0.6rem] uppercase tracking-[0.24em] text-muted">
+          Beta
+        </span>
+      </Navbar>
+      <p className="text-[0.72rem] text-muted">
+        Navbar items support active states, icons, and custom action slots.
+      </p>
+    </div>
+  );
+
+  const renderSidebarContent = () => (
+    <div className="flex flex-col gap-4">
+      <Sidebar
+        sections={sidebarSections}
+        selectedId={sidebarSelection}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={setSidebarCollapsed}
+        onSelect={setSidebarSelection}
+        className="h-[420px] max-w-[320px]"
+      />
+      <div className="flex-1 space-y-3">
+        <p className="text-[0.72rem] text-muted">
+          The sidebar component nests groups, handles collapse, and renders badges.
+        </p>
+        <div className="rounded border border-dashed border-[var(--toolbar-border)] px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
+          Selected item: {sidebarSelection ?? "None"}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderToolbarContent = () => (
+    <div className="space-y-4">
+      <Ribbon
+        tabs={ribbonTabs}
+        activeTabId={activeRibbonTab}
+        onTabChange={setActiveRibbonTab}
+        density="compact"
+      />
+      <Toolbar groups={toolbarGroups} density="comfortable" />
+      <p className="text-[0.68rem] text-muted">
+        Combine the ribbon shell with the toolbar primitive for high-density control surfaces.
+      </p>
+    </div>
+  );
+
+  const renderTooltipContent = () => (
+    <div className="space-y-4">
+      <p className="text-[0.72rem] text-muted">
+        Tooltips appear on hover and focus with directional arrows.
+      </p>
+      <div className="flex flex-wrap gap-3">
+        <Tooltip label="Duplicate the current component">
+          <Button size="sm" variant="secondary">
+            Duplicate
+          </Button>
+        </Tooltip>
+        <Tooltip label="Archive and remove from the library" placement="bottom">
+          <Button size="sm" variant="warning">
+            Archive
+          </Button>
+        </Tooltip>
+        <Tooltip label="Copy a shareable link" placement="right">
+          <Button size="sm">Copy link</Button>
+        </Tooltip>
+      </div>
+    </div>
+  );
+
+  const renderModalContent = () => (
+    <div className="space-y-4">
+      <p className="text-[0.72rem] text-muted">
+        Test modal focus trapping, escape handling, and overlay dismissal.
+      </p>
+      <div className="flex gap-2">
+        <Button onClick={() => setModalOpen(true)}>Open modal</Button>
+        <Button variant="secondary" onClick={() => setModalOpen(false)} disabled={!modalOpen}>
+          Close modal
+        </Button>
+      </div>
+      <p className="text-[0.68rem] text-muted">
+        The modal portal renders at the document root to match product behavior.
+      </p>
+    </div>
+  );
+
+  const renderTreeContent = () => (
+    <div className="flex flex-col gap-4">
+      <p className="text-[0.72rem] text-muted">
+        Navigate nested resources with keyboard support and badges.
+      </p>
+      <TreeView
+        items={treeItems}
+        selectedId={treeSelection}
+        expandedIds={treeExpanded}
+        onSelect={setTreeSelection}
+        onExpandedChange={setTreeExpanded}
+        className="flex-1"
+      />
+      <div className="rounded border border-dashed border-[var(--toolbar-border)] px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
+        Selected node: {treeSelection ?? "None"}
+      </div>
+    </div>
+  );
+
+  const renderTerminalContent = () => (
+    <div className="flex flex-col gap-3">
+      <p className="text-[0.72rem] text-muted">
+        Monitor dev server output and simulate workspace commands.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        <Button size="sm" onClick={handleTerminalRunTypecheck}>
+          Run type check
+        </Button>
+        <Button size="sm" variant="secondary" onClick={handleTerminalClear}>
+          Clear
+        </Button>
+      </div>
+      <div className="flex-1 overflow-hidden rounded border border-[var(--control-border)] bg-[#080b12]">
+        <Terminal content={terminalBuffer} options={terminalOptions} />
+      </div>
+    </div>
+  );
+
+  const renderThemeContent = () => (
+    <div className="space-y-6">
+      <div>
+        <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
+          Display Mode
+        </h3>
+        <Button onClick={toggleMode}>
+          {mode === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+        </Button>
+      </div>
+      <div>
+        <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
+          Accent Color
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {accentSwatches.map((swatch) => (
+            <button
+              key={swatch.value}
+              type="button"
+              onClick={() => setAccent(swatch.value)}
+              className="h-12 w-12 border border-[var(--control-border)] transition hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(9,18,27,0.35)]"
+              style={{ backgroundColor: swatch.value }}
+              aria-label={`Use ${swatch.name} accent`}
+            />
+          ))}
+        </div>
+      </div>
+      <div>
+        <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
+          Notifications
+        </h3>
+        <div className="flex gap-2">
+          <Button
+            onClick={() =>
+              notify({
+                title: "Test notification",
+                description: "This is a test notification.",
+                variant: "info",
+              })
+            }
+          >
+            Show Toast
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderWorkflowContent = () => (
+    <div className="flex flex-col gap-4">
+      <div className="rounded border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-2 text-[0.72rem] text-muted">
+        Use the palette to drop new steps onto the canvas, then drag nodes to lay out your workflow.
+      </div>
+      <NodeEditor
+        nodes={nodeEditorNodes}
+        edges={nodeEditorEdges}
+        palette={nodePalette}
+        onNodesChange={setNodeEditorNodes}
+        onEdgesChange={setNodeEditorEdges}
+        gridSize={24}
+        snapToGrid={false}
+        className="flex-1 min-h-[360px]"
+        viewportHeight={380}
+      />
+    </div>
+  );
+
+  const componentLibraryItems: ComponentLibraryItem[] = [
+    {
+      id: "buttons",
+      label: "Buttons",
+      description: "Primary, secondary, and status button variants.",
+      icon: <ButtonsIcon />,
+      render: renderButtonsContent,
+    },
+    {
+      id: "forms",
+      label: "Form Inputs",
+      description: "Text, password, and select fields.",
+      icon: <FormsIcon />,
+      render: renderFormsContent,
+    },
+    {
+      id: "tables",
+      label: "Data Tables",
+      description: "Striped grid with comfort density.",
+      icon: <TablesIcon />,
+      render: renderTablesContent,
+    },
+    {
+      id: "navigation",
+      label: "Navigation",
+      description: "Breadcrumb, pagination, and tabs samples.",
+      icon: <NavigationIcon />,
+      render: renderNavigationContent,
+    },
+    {
+      id: "accordion",
+      label: "Accordion",
+      description: "Disclosure panels for dense settings.",
+      icon: <AccordionIcon />,
+      render: renderAccordionContent,
+    },
+    {
+      id: "cards",
+      label: "Cards",
+      description: "Multi-section card layout with actions.",
+      icon: <CardsIcon />,
+      render: renderCardsContent,
+    },
+    {
+      id: "palette",
+      label: "Command Palette",
+      description: "Searchable command surface examples.",
+      icon: <PaletteIcon />,
+      render: renderCommandPaletteContent,
+    },
+    {
+      id: "listbox",
+      label: "Listbox",
+      description: "Keyboard-friendly option selection.",
+      icon: <ListboxIcon />,
+      render: renderListboxContent,
+    },
+    {
+      id: "menubar",
+      label: "Menubar",
+      description: "Desktop-style menu commands.",
+      icon: <MenubarIcon />,
+      render: renderMenubarContent,
+    },
+    {
+      id: "navbar",
+      label: "Navbar",
+      description: "Product chrome with badge callouts.",
+      icon: <NavbarIcon />,
+      render: renderNavbarContent,
+    },
+    {
+      id: "sidebar",
+      label: "Sidebar",
+      description: "Hierarchical navigator with collapse.",
+      icon: <SidebarIcon />,
+      render: renderSidebarContent,
+    },
+    {
+      id: "toolbar",
+      label: "Toolbar",
+      description: "Ribbon tabs paired with toolbar groups.",
+      icon: <ToolbarIcon />,
+      render: renderToolbarContent,
+    },
+    {
+      id: "tooltip",
+      label: "Tooltips",
+      description: "Directional hints for controls.",
+      icon: <TooltipIcon />,
+      render: renderTooltipContent,
+    },
+    {
+      id: "modal",
+      label: "Modal",
+      description: "Modal trigger and dismissal workflow.",
+      icon: <ModalIcon />,
+      render: renderModalContent,
+    },
+    {
+      id: "tree",
+      label: "Tree View",
+      description: "Nested hierarchy navigation.",
+      icon: <TreeIcon />,
+      render: renderTreeContent,
+    },
+    {
+      id: "terminal",
+      label: "Terminal",
+      description: "Emulated terminal session output.",
+      icon: <TerminalIcon />,
+      render: renderTerminalContent,
+    },
+    {
+      id: "theme",
+      label: "Theme Settings",
+      description: "Mode toggle and accent swatches.",
+      icon: <ThemeIcon />,
+      render: renderThemeContent,
+    },
+    {
+      id: "workflow",
+      label: "Workflow Editor",
+      description: "Canvas with nodes and palette.",
+      icon: <WorkflowIcon />,
+      render: renderWorkflowContent,
+    },
+  ];
 
   const openWindow = useCallback((windowId: string) => {
     setOpenWindows(prev => new Set(prev).add(windowId));
@@ -607,6 +1238,11 @@ function Workspace() {
   const focusedWindowLabel = focusedWindow ? windowLabelMap[focusedWindow] ?? focusedWindow : "Desktop";
   const openWindowCount = openWindows.size;
   const commandPaletteVisible = commandPaletteOpen && openWindows.has("palette");
+  const showDesktop = activeSurface === "desktop";
+
+  const handleLibrarySelect = useCallback((id: string) => {
+    setLibraryActiveId(id);
+  }, []);
 
   const openCommandPalette = useCallback(() => {
     setCommandPaletteOpen(true);
@@ -1153,27 +1789,48 @@ function Workspace() {
 
   return (
     <>
-      <Desktop
-        icons={desktopIcons}
-        taskbar={(
-          <Taskbar
-            items={taskbarItems}
-            nodeViewMode={nodeViewMode}
-            onNodeViewToggle={() => setNodeViewMode(!nodeViewMode)}
-            onCommandPaletteOpen={openCommandPalette}
-            commandPaletteActive={commandPaletteVisible}
-            brandName={WORKSPACE_NAME}
-            brandLogo={<NebulaLogo />}
-          />
-        )}
-        statusbar={<StatusBar items={statusBarItems} />}
-        showConnections={nodeViewMode}
-        connections={connections}
-        onConnectionsChange={setConnections}
+      <div
+        className="fixed right-4 z-[70] flex gap-2"
+        style={{ top: showDesktop ? "56px" : "16px" }}
       >
+        <Button
+          size="sm"
+          variant={showDesktop ? "primary" : "secondary"}
+          onClick={() => setActiveSurface("desktop")}
+        >
+          Desktop
+        </Button>
+        <Button
+          size="sm"
+          variant={showDesktop ? "secondary" : "primary"}
+          onClick={() => setActiveSurface("library")}
+        >
+          Component Library
+        </Button>
+      </div>
+      {showDesktop ? (
+        <>
+          <Desktop
+            icons={desktopIcons}
+            taskbar={(
+              <Taskbar
+                items={taskbarItems}
+                nodeViewMode={nodeViewMode}
+                onNodeViewToggle={() => setNodeViewMode(!nodeViewMode)}
+                onCommandPaletteOpen={openCommandPalette}
+                commandPaletteActive={commandPaletteVisible}
+                brandName={WORKSPACE_NAME}
+                brandLogo={<NebulaLogo />}
+              />
+            )}
+            statusbar={<StatusBar items={statusBarItems} />}
+            showConnections={nodeViewMode}
+            connections={connections}
+            onConnectionsChange={setConnections}
+          >
       {/* Buttons Window */}
       {openWindows.has("buttons") && (
-        <Window
+      <Window
           id="buttons"
           title="Buttons"
           icon={<ButtonsIcon />}
@@ -1188,32 +1845,7 @@ function Workspace() {
           inputs={windowPorts.buttons.inputs}
           outputs={windowPorts.buttons.outputs}
         >
-          <div className="space-y-4">
-            <div>
-              <h3 className="mb-2 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
-                Button Variants
-              </h3>
-              <p className="mb-4 text-[0.72rem] text-muted">
-                Variants for primary workflows and alerts.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <Button>Primary</Button>
-                <Button variant="secondary">Secondary</Button>
-                <Button variant="warning">Warning</Button>
-                <Button variant="error">Error</Button>
-                <Button disabled>Disabled</Button>
-              </div>
-            </div>
-            <div>
-              <h3 className="mb-2 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
-                Button Sizes
-              </h3>
-              <div className="flex flex-wrap items-center gap-3">
-                <Button size="sm">Small</Button>
-                <Button>Default</Button>
-              </div>
-            </div>
-          </div>
+          {renderButtonsContent()}
         </Window>
       )}
 
@@ -1234,40 +1866,7 @@ function Workspace() {
           inputs={windowPorts.forms.inputs}
           outputs={windowPorts.forms.outputs}
         >
-          <div className="space-y-4">
-            <p className="text-[0.72rem] text-muted">Designed to match editor chrome.</p>
-            <div className="space-y-3">
-              <Textbox label="Repository" value="astra/nebula" onChange={() => {}} />
-              <Textbox label="Owner" value="Casey Simmons" disabled onChange={() => {}} />
-              <Textbox
-                label="API Key"
-                type="password"
-                value="••••••••••••"
-                onChange={() => {}}
-                endSlot={<Button size="sm">Reveal</Button>}
-              />
-              <Select
-                label="Visibility"
-                description="Controls who can see this repository."
-                value={repositoryVisibility}
-                onChange={event =>
-                  setRepositoryVisibility(event.target.value as "public" | "internal" | "private")
-                }
-              >
-                <option value="public">Public</option>
-                <option value="internal">Internal</option>
-                <option value="private">Private</option>
-              </Select>
-              <Select label="Region" defaultValue="us-east" disabled>
-                <option value="us-east">US East</option>
-                <option value="us-west">US West</option>
-                <option value="eu-central">EU Central</option>
-              </Select>
-            </div>
-            <div className="rounded border border-dashed border-[var(--toolbar-border)] px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
-              Selected visibility: {repositoryVisibility.charAt(0).toUpperCase() + repositoryVisibility.slice(1)}
-            </div>
-          </div>
+          {renderFormsContent()}
         </Window>
       )}
 
@@ -1288,15 +1887,7 @@ function Workspace() {
           inputs={windowPorts.tables.inputs}
           outputs={windowPorts.tables.outputs}
         >
-          <div className="space-y-3">
-            <p className="text-[0.72rem] text-muted">Track delivery readiness across your engineering org.</p>
-            <Table<Task>
-              columns={tableColumns}
-              data={tasks}
-              striped
-              density="comfortable"
-            />
-          </div>
+          {renderTablesContent()}
         </Window>
       )}
 
@@ -1317,47 +1908,7 @@ function Workspace() {
           inputs={windowPorts.navigation.inputs}
           outputs={windowPorts.navigation.outputs}
         >
-          <div className="space-y-6">
-            <div>
-              <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
-                Breadcrumb
-              </h3>
-              <Breadcrumb
-                items={[
-                  { id: "1", label: "Projects" },
-                  { id: "2", label: "Nebula UI" },
-                  { id: "3", label: "Components" },
-                ]}
-              />
-            </div>
-            <div>
-              <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
-                Pagination
-              </h3>
-              <Pagination page={2} pageCount={12} onPageChange={() => {}} siblings={1} />
-            </div>
-            <div>
-              <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
-                Tabs
-              </h3>
-              <Tabs
-                items={[
-                  {
-                    id: "overview",
-                    label: "Overview",
-                    description: "Main view",
-                    content: <p className="text-[0.72rem] text-muted">Overview content goes here.</p>,
-                  },
-                  {
-                    id: "details",
-                    label: "Details",
-                    description: "Detailed view",
-                    content: <p className="text-[0.72rem] text-muted">Details content goes here.</p>,
-                  },
-                ]}
-              />
-            </div>
-          </div>
+          {renderNavigationContent()}
         </Window>
       )}
 
@@ -1378,12 +1929,7 @@ function Workspace() {
           inputs={windowPorts.accordion.inputs}
           outputs={windowPorts.accordion.outputs}
         >
-          <div className="space-y-4">
-            <p className="text-[0.72rem] text-muted">
-              Use accordions to group dense configuration details for reviewers.
-            </p>
-            <Accordion items={accordionItems} />
-          </div>
+          {renderAccordionContent()}
         </Window>
       )}
 
@@ -1404,30 +1950,7 @@ function Workspace() {
           inputs={windowPorts.cards.inputs}
           outputs={windowPorts.cards.outputs}
         >
-          <div className="space-y-4">
-            <p className="text-[0.72rem] text-muted">
-              The card component packages chrome, expandable sections, and footers.
-            </p>
-            <Card
-              title="Integration Checklist"
-              description="Validate each step before shipping to production"
-              footer="Last updated 2 minutes ago by Casey"
-            >
-              <Card.Section title="Authentication" description="OAuth client" actions={<span>3 steps</span>}>
-                <ul className="list-inside list-disc space-y-1 text-[0.72rem]">
-                  <li>Exchange staging credentials</li>
-                  <li>Record redirect URIs</li>
-                  <li>Capture consent screenshots</li>
-                </ul>
-              </Card.Section>
-              <Card.Section title="Observability" description="Ensure instrumentation" defaultOpen={false}>
-                <div className="space-y-2 text-[0.72rem]">
-                  <p className="text-muted">Enable tracing for error and latency signals.</p>
-                  <Button size="sm">Configure exporters</Button>
-                </div>
-              </Card.Section>
-            </Card>
-          </div>
+          {renderCardsContent()}
         </Window>
       )}
 
@@ -1448,23 +1971,7 @@ function Workspace() {
           inputs={windowPorts.palette.inputs}
           outputs={windowPorts.palette.outputs}
         >
-          <div className="space-y-4">
-            <p className="text-[0.72rem] text-muted">
-              Surface workspace actions with fuzzy search and keyboard shortcuts.
-            </p>
-            <div className="flex flex-wrap items-center gap-2">
-              <Button onClick={() => setCommandPaletteOpen(true)}>Open Palette</Button>
-              <Button variant="secondary" size="sm" onClick={() => setCommandPaletteOpen(true)}>
-                Simulate Cmd+K
-              </Button>
-              <Button size="sm" onClick={() => setLastCommand(null)}>
-                Clear last command
-              </Button>
-            </div>
-            <div className="rounded border border-[var(--control-border)] bg-control px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
-              Last command: {lastCommand ?? "None yet"}
-            </div>
-          </div>
+          {renderCommandPaletteContent()}
         </Window>
       )}
 
@@ -1485,15 +1992,7 @@ function Workspace() {
           inputs={windowPorts.listbox.inputs}
           outputs={windowPorts.listbox.outputs}
         >
-          <div className="flex h-full flex-col gap-4">
-            <p className="text-[0.72rem] text-muted">
-              The listbox supports mouse, keyboard, and disabled options.
-            </p>
-            <Listbox options={listboxOptions} value={listboxSelection} onChange={setListboxSelection} className="flex-1" />
-            <div className="rounded border border-dashed border-[var(--toolbar-border)] px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
-              Selected: {listboxSelection ?? "None"}
-            </div>
-          </div>
+          {renderListboxContent()}
         </Window>
       )}
 
@@ -1514,15 +2013,7 @@ function Workspace() {
           inputs={windowPorts.menubar.inputs}
           outputs={windowPorts.menubar.outputs}
         >
-          <div className="space-y-4">
-            <Menubar items={menubarItems} />
-            <div className="rounded border border-[var(--control-border)] bg-control px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
-              {menubarMessage}
-            </div>
-            <p className="text-[0.68rem] text-muted">
-              Use nested menus, separators, and destructive actions to model product chrome.
-            </p>
-          </div>
+          {renderMenubarContent()}
         </Window>
       )}
 
@@ -1543,20 +2034,7 @@ function Workspace() {
           inputs={windowPorts.navbar.inputs}
           outputs={windowPorts.navbar.outputs}
         >
-          <div className="space-y-4">
-            <Navbar
-              brand={<span className="text-[0.72rem] uppercase tracking-[0.24em]">Nebula Studio</span>}
-              links={navbarLinks}
-              actions={<Button size="sm">Invite</Button>}
-            >
-              <span className="rounded border border-[var(--control-border)] bg-control px-2 py-1 text-[0.6rem] uppercase tracking-[0.24em] text-muted">
-                Beta
-              </span>
-            </Navbar>
-            <p className="text-[0.72rem] text-muted">
-              Navbar items support active states, icons, and custom action slots.
-            </p>
-          </div>
+          {renderNavbarContent()}
         </Window>
       )}
 
@@ -1577,24 +2055,7 @@ function Workspace() {
           inputs={windowPorts.sidebar.inputs}
           outputs={windowPorts.sidebar.outputs}
         >
-          <div className="flex h-full gap-4">
-            <Sidebar
-              sections={sidebarSections}
-              selectedId={sidebarSelection}
-              collapsed={sidebarCollapsed}
-              onToggleCollapse={setSidebarCollapsed}
-              onSelect={setSidebarSelection}
-              className="h-full"
-            />
-            <div className="flex-1 space-y-3">
-              <p className="text-[0.72rem] text-muted">
-                The sidebar component nests groups, handles collapse, and renders badges.
-              </p>
-              <div className="rounded border border-dashed border-[var(--toolbar-border)] px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
-                Selected item: {sidebarSelection ?? "None"}
-              </div>
-            </div>
-          </div>
+          {renderSidebarContent()}
         </Window>
       )}
 
@@ -1615,18 +2076,7 @@ function Workspace() {
           inputs={windowPorts.toolbar.inputs}
           outputs={windowPorts.toolbar.outputs}
         >
-          <div className="space-y-4">
-            <Ribbon
-              tabs={ribbonTabs}
-              activeTabId={activeRibbonTab}
-              onTabChange={setActiveRibbonTab}
-              density="compact"
-            />
-            <Toolbar groups={toolbarGroups} density="comfortable" />
-            <p className="text-[0.68rem] text-muted">
-              Combine the ribbon shell with the toolbar primitive for high-density control surfaces.
-            </p>
-          </div>
+          {renderToolbarContent()}
         </Window>
       )}
 
@@ -1647,26 +2097,7 @@ function Workspace() {
           inputs={windowPorts.tooltip.inputs}
           outputs={windowPorts.tooltip.outputs}
         >
-          <div className="space-y-4">
-            <p className="text-[0.72rem] text-muted">
-              Tooltips appear on hover and focus with directional arrows.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Tooltip label="Duplicate the current component">
-                <Button size="sm" variant="secondary">
-                  Duplicate
-                </Button>
-              </Tooltip>
-              <Tooltip label="Archive and remove from the library" placement="bottom">
-                <Button size="sm" variant="warning">
-                  Archive
-                </Button>
-              </Tooltip>
-              <Tooltip label="Copy a shareable link" placement="right">
-                <Button size="sm">Copy link</Button>
-              </Tooltip>
-            </div>
-          </div>
+          {renderTooltipContent()}
         </Window>
       )}
 
@@ -1687,20 +2118,7 @@ function Workspace() {
           inputs={windowPorts.modal.inputs}
           outputs={windowPorts.modal.outputs}
         >
-          <div className="space-y-4">
-            <p className="text-[0.72rem] text-muted">
-              Test modal focus trapping, escape handling, and overlay dismissal.
-            </p>
-            <div className="flex gap-2">
-              <Button onClick={() => setModalOpen(true)}>Open modal</Button>
-              <Button variant="secondary" onClick={() => setModalOpen(false)} disabled={!modalOpen}>
-                Close modal
-              </Button>
-            </div>
-            <p className="text-[0.68rem] text-muted">
-              The modal portal renders at the document root to match product behavior.
-            </p>
-          </div>
+          {renderModalContent()}
         </Window>
       )}
 
@@ -1721,22 +2139,7 @@ function Workspace() {
           inputs={windowPorts.tree.inputs}
           outputs={windowPorts.tree.outputs}
         >
-          <div className="flex h-full flex-col gap-4">
-            <p className="text-[0.72rem] text-muted">
-              Navigate nested resources with keyboard support and badges.
-            </p>
-            <TreeView
-              items={treeItems}
-              selectedId={treeSelection}
-              expandedIds={treeExpanded}
-              onSelect={setTreeSelection}
-              onExpandedChange={setTreeExpanded}
-              className="flex-1"
-            />
-            <div className="rounded border border-dashed border-[var(--toolbar-border)] px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
-              Selected node: {treeSelection ?? "None"}
-            </div>
-          </div>
+          {renderTreeContent()}
         </Window>
       )}
 
@@ -1757,22 +2160,7 @@ function Workspace() {
           inputs={windowPorts.terminal.inputs}
           outputs={windowPorts.terminal.outputs}
         >
-          <div className="flex h-full flex-col gap-3">
-            <p className="text-[0.72rem] text-muted">
-              Monitor dev server output and simulate workspace commands.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <Button size="sm" onClick={handleTerminalRunTypecheck}>
-                Run type check
-              </Button>
-              <Button size="sm" variant="secondary" onClick={handleTerminalClear}>
-                Clear
-              </Button>
-            </div>
-            <div className="flex-1 overflow-hidden rounded border border-[var(--control-border)] bg-[#080b12]">
-              <Terminal content={terminalBuffer} options={terminalOptions} />
-            </div>
-          </div>
+          {renderTerminalContent()}
         </Window>
       )}
 
@@ -1793,51 +2181,7 @@ function Workspace() {
           inputs={windowPorts.theme.inputs}
           outputs={windowPorts.theme.outputs}
         >
-          <div className="space-y-6">
-            <div>
-              <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
-                Display Mode
-              </h3>
-              <Button onClick={toggleMode}>
-                {mode === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
-              </Button>
-            </div>
-            <div>
-              <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
-                Accent Color
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {accentSwatches.map((swatch) => (
-                  <button
-                    key={swatch.value}
-                    type="button"
-                    onClick={() => setAccent(swatch.value)}
-                    className="h-12 w-12 border border-[var(--control-border)] transition hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(9,18,27,0.35)]"
-                    style={{ backgroundColor: swatch.value }}
-                    aria-label={`Use ${swatch.name} accent`}
-                  />
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-wider text-subtle">
-                Notifications
-              </h3>
-              <div className="flex gap-2">
-                <Button
-                  onClick={() =>
-                    notify({
-                      title: "Test notification",
-                      description: "This is a test notification.",
-                      variant: "info",
-                    })
-                  }
-                >
-                  Show Toast
-                </Button>
-              </div>
-            </div>
-          </div>
+          {renderThemeContent()}
         </Window>
       )}
 
@@ -1858,67 +2202,60 @@ function Workspace() {
           inputs={windowPorts.workflow.inputs}
           outputs={windowPorts.workflow.outputs}
         >
-          <div className="flex h-full flex-col gap-4">
-            <div className="rounded border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-2 text-[0.72rem] text-muted">
-              Use the palette to drop new steps onto the canvas, then drag nodes to lay out your workflow.
-            </div>
-            <NodeEditor
-              nodes={nodeEditorNodes}
-              edges={nodeEditorEdges}
-              palette={nodePalette}
-              onNodesChange={setNodeEditorNodes}
-              onEdgesChange={setNodeEditorEdges}
-              gridSize={24}
-              snapToGrid={false}
-              className="flex-1 min-h-[360px]"
-              viewportHeight={380}
-            />
-          </div>
+          {renderWorkflowContent()}
         </Window>
       )}
-      </Desktop>
-      <CommandPalette
-        commands={commandPaletteCommands}
-        open={commandPaletteVisible}
-        onClose={() => setCommandPaletteOpen(false)}
-      />
-      <Modal
-        open={modalOpen && openWindows.has("modal")}
-        onClose={() => setModalOpen(false)}
-        title="Schedule deployment"
-        description="Confirm blueprint publication to the selected environment."
-        footer={
-          <>
-            <Button variant="secondary" onClick={() => setModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                notify({ title: "Deployment scheduled", description: "Release goes live at 09:00 UTC.", variant: "success" });
-                setModalOpen(false);
-              }}
-            >
-              Confirm
-            </Button>
-          </>
-        }
-      >
-        <div className="space-y-3">
-          <p className="text-[0.72rem] text-muted">
-            Choose a window and environment to publish your updated components. All approvers will be notified.
-          </p>
-          <div className="grid grid-cols-2 gap-3 text-[0.72rem]">
-            <div className="rounded border border-[var(--control-border)] bg-control px-3 py-2">
-              <h4 className="text-[0.68rem] uppercase tracking-[0.18em] text-muted">Window</h4>
-              <p className="text-subtle">October 9, 2024 09:00 UTC</p>
+          </Desktop>
+          <CommandPalette
+            commands={commandPaletteCommands}
+            open={commandPaletteVisible}
+            onClose={() => setCommandPaletteOpen(false)}
+          />
+          <Modal
+            open={modalOpen && openWindows.has("modal")}
+            onClose={() => setModalOpen(false)}
+            title="Schedule deployment"
+            description="Confirm blueprint publication to the selected environment."
+            footer={
+              <>
+                <Button variant="secondary" onClick={() => setModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => {
+                    notify({ title: "Deployment scheduled", description: "Release goes live at 09:00 UTC.", variant: "success" });
+                    setModalOpen(false);
+                  }}
+                >
+                  Confirm
+                </Button>
+              </>
+            }
+          >
+            <div className="space-y-3">
+              <p className="text-[0.72rem] text-muted">
+                Choose a window and environment to publish your updated components. All approvers will be notified.
+              </p>
+              <div className="grid grid-cols-2 gap-3 text-[0.72rem]">
+                <div className="rounded border border-[var(--control-border)] bg-control px-3 py-2">
+                  <h4 className="text-[0.68rem] uppercase tracking-[0.18em] text-muted">Window</h4>
+                  <p className="text-subtle">October 9, 2024 09:00 UTC</p>
+                </div>
+                <div className="rounded border border-[var(--control-border)] bg-control px-3 py-2">
+                  <h4 className="text-[0.68rem] uppercase tracking-[0.18em] text-muted">Environment</h4>
+                  <p className="text-subtle">Production</p>
+                </div>
+              </div>
             </div>
-            <div className="rounded border border-[var(--control-border)] bg-control px-3 py-2">
-              <h4 className="text-[0.68rem] uppercase tracking-[0.18em] text-muted">Environment</h4>
-              <p className="text-subtle">Production</p>
-            </div>
-          </div>
-        </div>
-      </Modal>
+          </Modal>
+        </>
+      ) : (
+        <ComponentLibraryPage
+          items={componentLibraryItems}
+          activeId={libraryActiveId}
+          onSelect={handleLibrarySelect}
+        />
+      )}
     </>
   );
 }
