@@ -19,6 +19,7 @@ import {
   Table,
   Tabs,
   Taskbar,
+  Terminal,
   StatusBar,
   Select,
   Textbox,
@@ -184,6 +185,16 @@ const tableColumns: TableColumn<Task>[] = [
 
 const WORKSPACE_NAME = "Nebula UI Library";
 
+const TERMINAL_PROMPT = "nebula@desktop:~/workspace$ ";
+const INITIAL_TERMINAL_LINES = [
+  `${TERMINAL_PROMPT}bun dev`,
+  "09:24:18  info  Warming up dev server",
+  "09:24:19  ready  Local:    http://localhost:5173",
+  "09:24:19  ready  Network:  http://192.168.1.50:5173",
+  "",
+  TERMINAL_PROMPT,
+];
+
 // Desktop icon components
 const ButtonsIcon = () => (
   <svg viewBox="0 0 64 64" fill="none" className="h-full w-full">
@@ -234,6 +245,20 @@ const WorkflowIcon = () => (
     <line x1="38" y1="32" x2="42" y2="32" stroke="currentColor" strokeWidth="2" />
     <line x1="28" y1="24" x2="32" y2="26" stroke="currentColor" strokeWidth="2" />
     <line x1="28" y1="40" x2="32" y2="38" stroke="currentColor" strokeWidth="2" />
+  </svg>
+);
+
+const TerminalIcon = () => (
+  <svg viewBox="0 0 64 64" fill="none" className="h-full w-full">
+    <rect x="10" y="16" width="44" height="32" rx="3" stroke="currentColor" strokeWidth="2" />
+    <path
+      d="M22 28 L28 32 L22 36"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <line x1="32" y1="36" x2="44" y2="36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 
@@ -380,6 +405,33 @@ function Workspace() {
   const [treeSelection, setTreeSelection] = useState<string | null>("folder-foundations");
   const [treeExpanded, setTreeExpanded] = useState<string[]>(["folder-foundations", "folder-components"]);
   const [activeRibbonTab, setActiveRibbonTab] = useState<string>("layout");
+  const [terminalBuffer, setTerminalBuffer] = useState<string[]>(() => [...INITIAL_TERMINAL_LINES]);
+
+  const terminalOptions = useMemo(() => ({ disableStdin: true }), []);
+
+  const handleTerminalClear = useCallback(() => {
+    setTerminalBuffer([TERMINAL_PROMPT]);
+  }, []);
+
+  const handleTerminalRunTypecheck = useCallback(() => {
+    setTerminalBuffer(prev => {
+      const next = [...prev];
+      if (next.length && next[next.length - 1] === TERMINAL_PROMPT) {
+        next.pop();
+      }
+      if (next.length && next[next.length - 1] === "") {
+        next.pop();
+      }
+
+      const timestamp = new Date().toLocaleTimeString([], { hour12: false });
+      next.push(`${TERMINAL_PROMPT}bunx tsc --noEmit`);
+      next.push(`${timestamp}  info  Checking project types`);
+      next.push(`${timestamp}  success  No type errors found`);
+      next.push("");
+      next.push(TERMINAL_PROMPT);
+      return next;
+    });
+  }, []);
 
   const openWindow = useCallback((windowId: string) => {
     setOpenWindows(prev => new Set(prev).add(windowId));
@@ -509,6 +561,12 @@ function Workspace() {
       label: "Tree",
       icon: <TreeIcon />,
       onOpen: () => openWindow("tree"),
+    },
+    {
+      id: "terminal",
+      label: "Terminal",
+      icon: <TerminalIcon />,
+      onOpen: () => openWindow("terminal"),
     },
     {
       id: "theme",
@@ -1088,6 +1146,7 @@ function Workspace() {
     toolbar: { inputs: ["actions"], outputs: ["invoke"] },
     tooltip: { inputs: ["trigger"], outputs: ["hint"] },
     tree: { inputs: ["nodes"], outputs: ["select"] },
+    terminal: { inputs: ["command"], outputs: ["stdout"] },
     theme: { inputs: [], outputs: ["theme-change"] },
     workflow: { inputs: ["trigger"], outputs: ["complete"] },
   };
@@ -1676,6 +1735,42 @@ function Workspace() {
             />
             <div className="rounded border border-dashed border-[var(--toolbar-border)] px-3 py-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
               Selected node: {treeSelection ?? "None"}
+            </div>
+          </div>
+        </Window>
+      )}
+
+      {/* Terminal Window */}
+      {openWindows.has("terminal") && (
+        <Window
+          id="terminal"
+          title="Terminal"
+          icon={<TerminalIcon />}
+          initialPosition={{ x: 560, y: 140 }}
+          initialSize={{ width: 640, height: 380 }}
+          onClose={() => closeWindow("terminal")}
+          onFocus={() => focusWindow("terminal")}
+          focused={focusedWindow === "terminal"}
+          state={windowStates["terminal"]}
+          onStateChange={state => updateWindowState("terminal", state)}
+          showPorts={nodeViewMode}
+          inputs={windowPorts.terminal.inputs}
+          outputs={windowPorts.terminal.outputs}
+        >
+          <div className="flex h-full flex-col gap-3">
+            <p className="text-[0.72rem] text-muted">
+              Monitor dev server output and simulate workspace commands.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" onClick={handleTerminalRunTypecheck}>
+                Run type check
+              </Button>
+              <Button size="sm" variant="secondary" onClick={handleTerminalClear}>
+                Clear
+              </Button>
+            </div>
+            <div className="flex-1 overflow-hidden rounded border border-[var(--control-border)] bg-[#080b12]">
+              <Terminal content={terminalBuffer} options={terminalOptions} />
             </div>
           </div>
         </Window>

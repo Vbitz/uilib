@@ -25,3 +25,4 @@ export * from "./TreeView";
 export * from "./Toast";
 export * from "./Tooltip";
 export * from "./Window";
+export * from "./Terminal";
