@@ -1,3 +1,5 @@
+import "./styles";
+
 export * from "./Button";
 export * from "./Card";
 export * from "./CommandPalette";

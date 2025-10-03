@@ -58,7 +58,7 @@ export function Taskbar({
           type="button"
           onClick={item.onFocus}
           className={cn(
-            "flex items-center gap-2 border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-1.5 text-[0.7rem] uppercase tracking-[0.16em] transition",
+            "flex items-center gap-2 border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-1.5 text-[0.7rem] uppercase tracking-[0.16em] text-[var(--desktop-foreground)] transition",
             "hover:bg-[var(--control-bg-hover)]",
             item.focused && "border-[var(--accent)] bg-[var(--accent)] text-[var(--window-bg)]",
             item.state === "minimized" && "opacity-60"
@@ -86,7 +86,7 @@ export function Taskbar({
           type="button"
           onClick={onCommandPaletteOpen}
           className={cn(
-            "flex items-center gap-2 border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-1.5 text-[0.7rem] uppercase tracking-[0.16em] transition",
+            "flex items-center gap-2 border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-1.5 text-[0.7rem] uppercase tracking-[0.16em] text-[var(--desktop-foreground)] transition",
             "hover:bg-[var(--control-bg-hover)]",
             commandPaletteActive && "border-[var(--accent)] bg-[var(--accent)] text-[var(--window-bg)]"
           )}
@@ -108,7 +108,7 @@ export function Taskbar({
           type="button"
           onClick={onNodeViewToggle}
           className={cn(
-            "flex items-center gap-2 border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-1.5 text-[0.7rem] uppercase tracking-[0.16em] transition",
+            "flex items-center gap-2 border border-[var(--control-border)] bg-[var(--control-bg)] px-3 py-1.5 text-[0.7rem] uppercase tracking-[0.16em] text-[var(--desktop-foreground)] transition",
             "hover:bg-[var(--control-bg-hover)]",
             nodeViewMode && "border-[var(--accent)] bg-[var(--accent)] text-[var(--window-bg)]",
             !items.length && "opacity-60"

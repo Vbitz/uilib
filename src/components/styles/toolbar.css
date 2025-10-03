@@ -1,0 +1,12 @@
+@layer components {
+  .retro-toolbar {
+    background: var(--toolbar-bg);
+    border: 1px solid var(--toolbar-border);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .retro-divider {
+    background: linear-gradient(180deg, transparent 0%, var(--toolbar-border) 50%, transparent 100%);
+    width: 1px;
+  }
+}

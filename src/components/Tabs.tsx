@@ -101,7 +101,7 @@ export function Tabs({
                 "focus-visible:outline-double focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2",
                 item.disabled && "cursor-not-allowed opacity-50",
                 isActive
-                  ? "border-[var(--accent)] bg-control-hover text-[var(--accent-muted-foreground)]"
+                  ? "border-[var(--accent)] bg-[var(--accent-muted)] text-[var(--accent-muted-foreground)]"
                   : "text-muted"
               )}
             >
