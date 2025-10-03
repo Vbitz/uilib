@@ -157,14 +157,6 @@ export function Window({
       const deltaX = e.clientX - resizeRef.current.startX;
       const deltaY = e.clientY - resizeRef.current.startY;
 
-      if (resizeDirection === "bottom") {
-        const newWidth = Math.max(MIN_WIDTH, resizeRef.current.startWidth + deltaX);
-        const newHeight = Math.max(MIN_HEIGHT, resizeRef.current.startHeight + deltaY);
-        setSize({ width: newWidth, height: newHeight });
-        setPosition({ x: resizeRef.current.startPosX, y: resizeRef.current.startPosY });
-        return;
-      }
-
       let newWidth = resizeRef.current.startWidth;
       let newHeight = resizeRef.current.startHeight;
       let newX = resizeRef.current.startPosX;
@@ -371,12 +363,11 @@ export function Window({
       {/* Resize handles */}
       {windowState !== "maximized" && !isMobile && (
         <div
-          className="window-resize-handle pointer-events-auto absolute bottom-0 left-1/2 h-5 w-28 -translate-x-1/2 cursor-nwse-resize"
-          onMouseDown={event => handleResizeStart(event, "bottom")}
+          className="window-resize-handle pointer-events-auto absolute bottom-0 right-0 h-6 w-6 cursor-nwse-resize"
+          data-orientation="corner"
+          onMouseDown={event => handleResizeStart(event, "se")}
           role="presentation"
-        >
-          <span className="pointer-events-none absolute left-1/2 top-1/2 h-1 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--toolbar-border)]" />
-        </div>
+        />
       )}
     </div>
   );

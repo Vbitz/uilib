@@ -170,13 +170,21 @@
   }
 
   .window-resize-handle[data-orientation="corner"]::before {
-    border-style: solid;
-    border-width: 0 2px 2px 0;
-    border-color: transparent;
+    inset: 4px;
+    border: 0;
+    background-image: repeating-linear-gradient(135deg,
+      var(--control-border) 0,
+      var(--control-border) 2px,
+      transparent 2px,
+      transparent 6px
+    );
+    clip-path: polygon(40% 100%, 100% 40%, 100% 100%);
+    opacity: 0.7;
+    transition: opacity 160ms ease;
   }
 
   .window-resize-handle[data-orientation="corner"]:hover::before {
-    border-color: transparent var(--control-border) var(--control-border) transparent;
+    opacity: 1;
   }
 
   .retro-toolbar {
